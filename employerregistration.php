@@ -9,8 +9,8 @@
 
 <?php
 // define variables and set to empty values
-$firstnameErr = $emailErr = $passwordErr = $schoolErr = "";
-$firstname = $email = $password = $school = "";
+$firstnameErr = $emailErr = $passwordErr = $companyErr = "";
+$firstname = $email = $password = $company = "";
 
 $db_conn = OCILogon("ora_l9y8", "a47714118", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 
@@ -45,10 +45,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
     
-  if (empty($_POST["school"])) {
-    $schoolErr = "School is required";
+  if (empty($_POST["Company"])) {
+    $companyErr = "Company is required";
   } else {
-    $school = test_input($_POST["school"]);
+    $company = test_input($_POST["Company"]);
   }
 
   if (empty($_POST["password"])) {
@@ -66,7 +66,7 @@ function test_input($data) {
 }
 ?>
 
-<h2>Create Student Account</h2>
+<h2>Create Employer Account</h2>
 <p><span class="error">* required field</span></p>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
   First Name: <input type="text" name="firstname" value="<?php echo $firstname;?>">
@@ -81,8 +81,8 @@ function test_input($data) {
   Password: <input type="text" name="password" value="<?php echo $password;?>">
   <span class="error">* <?php echo $passwordErr;?></span>
   <br><br>
-  School: <input type="text" name="school" value="<?php echo $school;?>">
-  <span class="error">* <?php echo $schoolErr;?></span>
+  Company: <input type="text" name="Company" value="<?php echo $company;?>">
+  <span class="error">* <?php echo $companyErr;?></span>
   <br><br>
   <input type="submit" name="submit" value="Submit">  
 </form>
@@ -97,7 +97,7 @@ echo $email;
 echo "<br>";
 echo $password;
 echo "<br>";
-echo $school;
+echo $company;
 ?>
 
 </body>
