@@ -193,4 +193,6 @@ INSERT INTO Reviews
 VALUES(CURRENT_TIMESTAMP, 1, 1, 2, 304, 'CPSC', 1, 1, 'Make a pony and ride it ; )', 'Dude sucked', 1, 0);
 
 INSERT INTO Endorsements
-VALUES (1, 3);
+VALUES (5, 1);
+
+COMMIT;

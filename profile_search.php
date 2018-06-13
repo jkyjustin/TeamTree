@@ -32,6 +32,24 @@
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 
+// Why isn't this working?
+// $query1 = "SELECT * FROM ACCOUNTS";
+// $rslt = executePlainSQL($query1);
+// OCI_commit($db_conn);
+// printResult($rslt);
+
+// Fetch each row in an associative array
+// print '<table border="1">';
+// while ($row = oci_fetch_array($stid, OCI_RETURN_NULLS+OCI_ASSOC)) {
+//    print '<tr>';
+//    foreach ($row as $item) {
+//        print '<td>'.($item !== null ? htmlentities($item, ENT_QUOTES) : '&nbsp').'</td>';
+//    }
+//    print '</tr>';
+// }
+// print '</table>';
+
+
 function executePlainSQL($cmdstr) {
 	global $db_conn, $success;
 	$statement = OCIParse($db_conn, $cmdstr);
@@ -66,8 +84,6 @@ function printResult($result) { //prints results from a select statement
 	echo "</table>";
 }
 
-
-
 // Check form submitted
 if (isset($_GET['submit'])) {
 	$fname = $_GET['fname'];
@@ -78,15 +94,13 @@ if (isset($_GET['submit'])) {
 
 	// Query on fname, lname, school -- very simplistic
 	if (!empty($lname)) {
-		$queryStr = "SELECT * FROM Students S, Accounts A, Schools C WHERE S.acctID=A.acctID AND S.schoolID=C.schoolID AND A.fname='{$fname}' AND A.lname='{$lname}' AND C.sName='{$school}'";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools C WHERE fname='{$fname}' AND A.lname='{$lname}' AND sName='{$school}'";
 
 		$result = executePlainSQL($queryStr);
 
 	} else {	// Query on just fname
-		$queryStr = "SELECT * FROM Students S, Accounts A, Schools C WHERE S.acctID=A.acctID AND S.schoolID=C.schoolID AND A.fname='{$fname}' AND C.sName='{$school}'";
-
-		echo $queryStr;
-
+		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE fname='{$fname}' AND sname='{$school}'";
+		echo($queryStr);
 		$result = executePlainSQL($queryStr);
 	}
 
