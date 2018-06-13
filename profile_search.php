@@ -56,7 +56,10 @@ function executePlainSQL($cmdstr) {
 }
 
 function getButton($acctID) {
-	return "lol";
+	session_start();
+	$_SESSION['profileAcctId'] = $acctID;
+	echo $acctID;
+	return '<a href="./profile.php">View Profile</a>';;
 }
 
 function printResult($result) { //prints results from a select statement

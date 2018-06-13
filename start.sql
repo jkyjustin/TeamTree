@@ -138,6 +138,11 @@ INSERT INTO Students
 VALUES (1, 1);
 
 INSERT INTO Accounts
+VALUES(8, 'Justin', 'ABC', 'jy123@email.com', 'password', 0);
+INSERT INTO Students
+VALUES (8, 1);
+
+INSERT INTO Accounts
 VALUES(2, 'Blake', 'Turnable', 'blaketmeng@gmail.com', 'password', 0);
 INSERT INTO Students
 VALUES(2, 1);
