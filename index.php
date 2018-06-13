@@ -219,3 +219,8 @@ window.onclick = function(event) {
 
 </body>
 </html>
+
+<?php
+  session_start();
+  // $_SESSION['loggedInUserId'] = <PLACE THE LOGGED IN USER ID HERE>;
+?>

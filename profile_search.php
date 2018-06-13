@@ -32,24 +32,6 @@
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 
-// Why isn't this working?
-// $query1 = "SELECT * FROM ACCOUNTS";
-// $rslt = executePlainSQL($query1);
-// OCI_commit($db_conn);
-// printResult($rslt);
-
-// Fetch each row in an associative array
-// print '<table border="1">';
-// while ($row = oci_fetch_array($stid, OCI_RETURN_NULLS+OCI_ASSOC)) {
-//    print '<tr>';
-//    foreach ($row as $item) {
-//        print '<td>'.($item !== null ? htmlentities($item, ENT_QUOTES) : '&nbsp').'</td>';
-//    }
-//    print '</tr>';
-// }
-// print '</table>';
-
-
 function executePlainSQL($cmdstr) {
 	global $db_conn, $success;
 	$statement = OCIParse($db_conn, $cmdstr);
@@ -73,16 +55,30 @@ function executePlainSQL($cmdstr) {
 	return $statement;
 }
 
+function getButton($acctID) {
+	return "lol";
+}
+
 function printResult($result) { //prints results from a select statement
 	echo "<br>Search results:<br>";
 	echo "<table>";
-	echo "<tr><th>First Name</th><th>Last Name</th></tr>";
+	echo "<tr><th>First Name</th><th>Last Name</th><th>School</th></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row["FNAME"] . "</td><td>" . $row["LNAME"] . "</td></tr>";
+		echo "<tr><td>" . $row["FNAME"] . "</td><td>" . $row["LNAME"] . "</td><td>" . $row["SNAME"] . "</td></tr>";
+		echo "<tr><td>";
+		// echo "$row["ACCTID"]";
+		echo getButton($row["ACCTID"]);
+		echo "</td></tr>";
 	}
 	echo "</table>";
 }
+
+// function selectStudentProfile($studentId) {
+// 	session_start();
+// 	$_SESSION['profileAcctId'] = ??;
+// 	// refresh to new page
+// }
 
 // Check form submitted
 if (isset($_GET['submit'])) {
@@ -100,7 +96,7 @@ if (isset($_GET['submit'])) {
 
 	} else {	// Query on just fname
 		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE fname='{$fname}' AND sname='{$school}'";
-		echo($queryStr);
+
 		$result = executePlainSQL($queryStr);
 	}
 
