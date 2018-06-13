@@ -138,6 +138,11 @@ INSERT INTO Students
 VALUES (1, 1);
 
 INSERT INTO Accounts
+VALUES(8, 'Justin', 'ABC', 'jy123@email.com', 'password', 0);
+INSERT INTO Students
+VALUES (8, 1);
+
+INSERT INTO Accounts
 VALUES(2, 'Blake', 'Turnable', 'blaketmeng@gmail.com', 'password', 0);
 INSERT INTO Students
 VALUES(2, 1);
@@ -193,4 +198,6 @@ INSERT INTO Reviews
 VALUES(CURRENT_TIMESTAMP, 1, 1, 2, 304, 'CPSC', 1, 1, 'Make a pony and ride it ; )', 'Dude sucked', 1, 0);
 
 INSERT INTO Endorsements
-VALUES (1, 3)
+VALUES (5, 1);
+
+COMMIT;
