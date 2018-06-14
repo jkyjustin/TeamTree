@@ -32,7 +32,7 @@ function executePlainSQL($cmdstr) {
 
 
 //$var = $_GET['acctID'];
-$var = 1;
+$var = 7;
 $result = NULL;
 
 $query = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE acctID ='{$var}'";
@@ -52,7 +52,16 @@ function printResult($result, $var){
 		
 		//Information for student profiles
 		if (!is_null($row["SNAME"])){
-			echo "Your Reviews <br>";
+			//ENDORSEMENTS
+			$endo = executePlainSQL("SELECT * FROM Endorsements NATURAL JOIN Students NATURAL JOIN Employers NATURAL JOIN Companies Where studentID ='{$var}'");
+			echo "These companies endorse " . $row["FNAME"] . ": ";
+			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+				echo $e["NAME"];
+			}
+			
+			
+			//REVIEWS
+			echo "<br>Your Reviews <br>";
 			
 			echo "<table><tr><th>Received</th></tr>";
 			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID ='{$var}'");
@@ -95,7 +104,13 @@ function printResult($result, $var){
 		}
 		//information for employer profiles
 		else if (!is_null($row["NAME"])){
-			echo endorse;
+			$cid = $row["COMPANYID"];
+			$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
+			echo "<table><tr><th>Endorsing:</th></tr>";
+			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+				$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "> View Profile </a>";
+				echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
+			}
 		}
 	}
 }
