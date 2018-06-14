@@ -14,7 +14,7 @@ CREATE TABLE Schools (
 	PRIMARY KEY (schoolID)
 );
 
-grant select on Schools to public
+grant select on Schools to public;
 
 CREATE TABLE Accounts (
 	acctID INT,
@@ -27,7 +27,7 @@ CREATE TABLE Accounts (
 	CONSTRAINT email_uniq UNIQUE (email)
 );
 
-grant select on Accounts to public
+grant select on Accounts to public;
 
 CREATE TABLE Students (
 	acctID INT,
@@ -41,7 +41,7 @@ CREATE TABLE Students (
 		DEFERRABLE INITIALLY DEFERRED
 );
 
-grant select on Students to public
+grant select on Students to public;
 
 CREATE TABLE Companies (
 	companyID INT,
@@ -50,7 +50,7 @@ CREATE TABLE Companies (
 	PRIMARY KEY (companyID)
 );
 
-grant select on Companies to public
+grant select on Companies to public;
 
 CREATE TABLE Employers (
 	acctID INT,
@@ -64,7 +64,7 @@ CREATE TABLE Employers (
 		DEFERRABLE INITIALLY DEFERRED
 );
 
-grant select on Employers to public
+grant select on Employers to public;
 
 CREATE TABLE Courses (
 	courseNo INT,
@@ -74,7 +74,7 @@ CREATE TABLE Courses (
 	FOREIGN KEY (schoolID) REFERENCES Schools(schoolID)
 );
 
-grant select on Schools to public
+grant select, insert on Courses to public;
 
 CREATE TABLE Endorsements (
 	employerID INT,
@@ -85,7 +85,7 @@ CREATE TABLE Endorsements (
 		DEFERRABLE INITIALLY DEFERRED
 );
 
-grant select on Endorsements to public
+grant select on Endorsements to public;
 
 CREATE TABLE Reviews (
 	datetime TIMESTAMP,
@@ -108,11 +108,9 @@ CREATE TABLE Reviews (
 		ON DELETE CASCADE
 		DEFERRABLE INITIALLY DEFERRED,
 	FOREIGN KEY (courseNo, dept, schoolID) REFERENCES Courses(courseNo, dept, schoolID)
-		ON DELETE CASCADE
-		DEFERRABLE INITIALLY DEFERRED
 );
 
-grant select on Reviews to public
+grant select on Reviews to public;
 
 /* Schools */
 INSERT INTO Schools
@@ -196,6 +194,9 @@ VALUES (225, 'CMPT', 2);
 
 INSERT INTO Reviews
 VALUES(CURRENT_TIMESTAMP, 1, 1, 2, 304, 'CPSC', 1, 1, 'Make a pony and ride it ; )', 'Dude sucked', 1, 0);
+
+INSERT INTO Reviews
+VALUES(CURRENT_TIMESTAMP, 2, 2, 1, 317, 'CPSC', 1, 5, 'blah blah 123', 'Yey we passed', 0, 0);
 
 INSERT INTO Endorsements
 VALUES (5, 1);
