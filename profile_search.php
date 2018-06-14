@@ -46,9 +46,9 @@ body {
 }
 
 /* Style for navbar */
-.body {
+.abc {
   width: 100%;
-  padding: 100px;
+  padding: 300px;
   background-image: url("image/backg3.png");
   background-repeat: no-repeat;
   background-position: left top;
