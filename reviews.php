@@ -45,8 +45,9 @@
 	// db login
 	$success = True; //keep track of errors so it redirects the page only if there are no errors
 	$db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-
-	// $reviewerId = 1;	// NEED TO DYNAMICALLY GENERATE THESE.. with sessionID maybe
+	
+	session_start(); 
+	$reviewerId = 1;	// $_SESSION('');
 	// $revieweeId = 2;
 	// $schoolId = 1;		// Same as ^
 	// $reviewId = 1; // NEED TO AUTOINCREMENT THIS IN DB
