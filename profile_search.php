@@ -17,7 +17,9 @@ body {
     border: 1px solid #ccc;
     box-sizing: border-box;
 }*/
-
+table {
+  border-spacing: 7px;
+}
 /* Style the header */
 .header {
     background-color: white;
@@ -300,6 +302,7 @@ if (isset($_GET['submit'])) {
 
 	$result = executePlainSQL($queryStr);
 	printResult($result);
+	OCILogoff($db_conn);
 }
 
 ?>
