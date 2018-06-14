@@ -56,10 +56,12 @@ function executePlainSQL($cmdstr) {
 }
 
 function getButton($acctID) {
-	session_start();
-	$_SESSION['profileAcctId'] = $acctID;
-	echo $acctID;
-	return '<a href="./profile.php">View Profile</a>';;
+	// session_start();
+	// $_SESSION['profileAcctId'] = $acctID;
+	// echo $acctID;
+	// $link = '<a href="./profile.php?acctID=' . $acctID . '>View Profile</a>';
+	$link = '<a href="./profile.php>View Profile</a>';
+	return $link;
 }
 
 function printResult($result) { //prints results from a select statement
@@ -68,41 +70,41 @@ function printResult($result) { //prints results from a select statement
 	echo "<tr><th>First Name</th><th>Last Name</th><th>School</th></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo "<tr><td>" . $row["FNAME"] . "</td><td>" . $row["LNAME"] . "</td><td>" . $row["SNAME"] . "</td></tr>";
-		echo "<tr><td>";
-		// echo "$row["ACCTID"]";
-		echo getButton($row["ACCTID"]);
-		echo "</td></tr>";
+		$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "> View Profile </a>";
+		echo "<tr><td>" . $row["FNAME"] . "</td><td>" . $row["LNAME"] . "</td><td>" . $row["SNAME"] . "</td><td>" . $profileLink . "</td></tr>";
 	}
 	echo "</table>";
 }
-
-// function selectStudentProfile($studentId) {
-// 	session_start();
-// 	$_SESSION['profileAcctId'] = ??;
-// 	// refresh to new page
-// }
 
 // Check form submitted
 if (isset($_GET['submit'])) {
 	$fname = $_GET['fname'];
 	$lname = $_GET['lname'];
-	$school = $_GET['school'];
+	$sname = $_GET['school'];
 
 	$result = NULL;
+	$queryStr = NULL;
 
 	// Query on fname, lname, school -- very simplistic
-	if (!empty($lname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools C WHERE fname='{$fname}' AND A.lname='{$lname}' AND sName='{$school}'";
-
-		$result = executePlainSQL($queryStr);
-
+	if (empty($lname) && empty($fname) && empty($sname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools";
+	} else if (empty($lname) && empty($fname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE sname='{$sname}'";
+	} else if (empty($lname) && empty($sname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}'";
+	} else if (empty($sname) && empty($fname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE lname='{$lname}'";
+	} else if (empty($fname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE lname='{$lname}' AND sname='{$sname}'";
+	} else if (empty($sname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}' AND lname='{$lname}'";
+	} else if (empty($lname)) {
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}' AND sname='{$sname}'";
 	} else {	// Query on just fname
-		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE fname='{$fname}' AND sname='{$school}'";
-
-		$result = executePlainSQL($queryStr);
+		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE fname='{$fname}' AND lname='{$lname}' AND sname='{$sname}'";
 	}
 
+	$result = executePlainSQL($queryStr);
 	printResult($result);
 }
 
