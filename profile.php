@@ -31,19 +31,17 @@ function executePlainSQL($cmdstr) {
 }
 
 
-//$var = $_GET['acctID'];
-$var = 7;
+$var = $_GET['acctID'];
+//$var = 1;
 $result = NULL;
 
 $query = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE acctID ='{$var}'";
 $result = executePlainSQL($query);
 printResult($result, $var);
 
-//echo OCI_num_rows($result);
-//if (is_null($result)) {
-	$query = "SELECT * FROM Employers NATURAL JOIN Accounts NATURAL JOIN Companies WHERE acctID ='{$var}'";
-	$result = executePlainSQL($query);
-//}
+$query = "SELECT * FROM Employers NATURAL JOIN Accounts NATURAL JOIN Companies WHERE acctID ='{$var}'";
+$result = executePlainSQL($query);
+
 printResult($result);
 
 function printResult($result, $var){
@@ -108,9 +106,10 @@ function printResult($result, $var){
 			$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
 			echo "<table><tr><th>Endorsing:</th></tr>";
 			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-				$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "> View Profile </a>";
+				$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
 				echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
 			}
+			echo "</table>";
 		}
 	}
 }
