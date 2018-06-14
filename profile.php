@@ -62,7 +62,7 @@ function printResult($result, $var){
 			echo "<br>Your Reviews <br>";
 			
 			echo "<table><tr><th>Received</th></tr>";
-			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID ='{$var}'");
+			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID ='{$var}'");
 			
 			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){				
 				echo "<tr><td>" . $r["DEPT"]. " ". $r ["COURSENO"] . ", " . $r["SNAME"] . "<br>Given by ";
@@ -75,13 +75,13 @@ function printResult($result, $var){
 				echo $o["FNAME"] . " " . $o["LNAME"] . "<br>"; //prints nothing
 				
 				echo "Assignment: " . $r["ASSIGNMENTDESC"] . " Score: " . $r["SCORE"] . "<br>";
-				echo $r["CONTENT"] . "<br> Likes: " . $r["NUMLIKES"] . " Dislikes: " . $r["NUMDISLIKES"];
+				echo $r["CONTENT"] . "<br> Likes: " . $r["NUMLIKES"] . " Dislikes: " . $r["NUMDISLIKES"] . " " . $r["DATETIME"];
 				echo "</tr></td>";
 			}
 			echo "</table>";
 			
 			echo "<table><tr><th>Given</th></tr>";
-			$given = executePlainSQL("SELECT DISTINCT reviewID,revieweeID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE reviewerID ='{$var}'");
+			$given = executePlainSQL("SELECT DISTINCT reviewID,revieweeID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE reviewerID ='{$var}'");
 			
 			while ($g = OCI_Fetch_Array($given, OCI_BOTH)){				
 				echo "<tr><td>" . $g["DEPT"]. " ". $g ["COURSENO"] . ", " . $g["SNAME"] . "<br>Given by ";
@@ -94,7 +94,7 @@ function printResult($result, $var){
 				echo $o["FNAME"] . " " . $o["LNAME"] . "<br>"; //prints nothing
 				
 				echo "Assignment: " . $g["ASSIGNMENTDESC"] . " Score: " . $g["SCORE"] . "<br>";
-				echo $g["CONTENT"] . "<br> Likes: " . $g["NUMLIKES"] . " Dislikes: " . $g["NUMDISLIKES"];
+				echo $g["CONTENT"] . "<br> Likes: " . $g["NUMLIKES"] . " Dislikes: " . $g["NUMDISLIKES"] . " " . $g["DATETIME"];
 				echo "</tr></td>";
 			}
 			echo "</table>";
