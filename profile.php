@@ -31,23 +31,29 @@ function executePlainSQL($cmdstr) {
 	return $statement;
 }
 
-if (isset($_GET['unendorse'])) {
-	echo "<br>ECHO FROM POST<br>";
-	$profileID = $_GET['acctID'];
-	$userID = $_GET['userID'];
-	$query = 'DELETE FROM Endorsements WHERE employerID=' . $userID . ' AND studentID=' . $profileID;
-	$result = executePlainSQL($query);
-	// OCICommit($db_conn);
-}
 
 $result = NULL;
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+if (isset($_GET['unendorse'])) {
+	$profileID = $_GET['acctID'];
+	$userID = $_GET['userID'];
+	$query = "DELETE FROM Endorsements WHERE employerID={$userID} AND studentID={$profileID}";
+	$result = executePlainSQL($query);
+	OCICommit($db_conn);
+}
+
+if (isset($_GET['endorse'])) {
+	$profileID = $_GET['acctID'];
+	$userID = $_GET['userID'];
+	$query = "INSERT INTO Endorsements VALUES({$userID}, {$profileID})";
+	$result = executePlainSQL($query);
+	OCICommit($db_conn);
+}
+
 $profileID = $_GET['acctID'];
-
 // $userID = $_GET['userID'];
-
-$userID = 5;
+$userID = 7;
 
 $query = "SELECT AVG(SCORE) FROM REVIEWS WHERE REVIEWEEID={$profileID}";
 $result = executePlainSQL($query);
@@ -79,18 +85,24 @@ function printResultForEmployers($result, $profileID, $userID) {
 			//ENDORSEMENTS
 			$endo = executePlainSQL("SELECT * FROM Endorsements End, Employers Emp, Companies Cmp WHERE End.studentID={$profileID} AND End.employerID=Emp.acctID AND Emp.companyID=Cmp.companyID");
 			
+			$endorsable = 1;
+
 			echo "<table><tr><th>Endorsed by:</th></tr>";
 			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-				
 				if ($e['EMPLOYERID'] != $userID) {
 					echo "<tr><td>" . $e["NAME"] . "</td></tr>";
 				} else {
 					echo '<tr><td>' . $e["NAME"] . '</td><td> <form action="profile.php" method="GET"><input type="hidden" name="acctID" value=' . $profileID . '><input type="hidden" name="userID" value=' . $userID . '><input type="submit" value="Unendorse" name="unendorse"></form> </td></tr>';
+					$endorsable = 0;
 				}
 			
 			}
-			echo "</table><br><br>";
-			
+			echo "</table><br>";
+			if ($endorsable) {
+				echo '<form action="profile.php" method="GET"><input type="hidden" name="acctID" value=' . $profileID . '><input type="hidden" name="userID" value=' . $userID . '><input type="submit" value="Endorse!" name="endorse"></form>';
+			}
+			echo "<br><br>";
+
 			//REVIEWS		
 			echo "<table><tr><th>Reviews</th></tr>";
 			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID={$profileID}");
@@ -116,16 +128,16 @@ function printResultForEmployers($result, $profileID, $userID) {
 			echo "</table>";
 		}
 		//information for employer profiles
-		else if (!is_null($row["NAME"])){
-			$cid = $row["COMPANYID"];
-			$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
-			echo "<table><tr><th>Endorsing:</th></tr>";
-			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-				$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
-				echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
-			}
-			echo "</table>";
-		}
+		// else if (!is_null($row["NAME"])){
+		// 	$cid = $row["COMPANYID"];
+		// 	$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
+		// 	echo "<table><tr><th>Endorsing:</th></tr>";
+		// 	while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+		// 		$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
+		// 		echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
+		// 	}
+		// 	echo "</table>";
+		// }
 	}
 }
 
@@ -171,16 +183,16 @@ function printResult($result, $profileID){
 			echo "</table>";
 		}
 		//information for employer profiles
-		else if (!is_null($row["NAME"])){
-			$cid = $row["COMPANYID"];
-			$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
-			echo "<table><tr><th>Endorsing:</th></tr>";
-			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-				$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
-				echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
-			}
-			echo "</table>";
-		}
+		// else if (!is_null($row["NAME"])){
+		// 	$cid = $row["COMPANYID"];
+		// 	$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
+		// 	echo "<table><tr><th>Endorsing:</th></tr>";
+		// 	while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+		// 		$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
+		// 		echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
+		// 	}
+		// 	echo "</table>";
+		// }
 	}
 }
 ?>
