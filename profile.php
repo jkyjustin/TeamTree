@@ -31,6 +31,13 @@ function executePlainSQL($cmdstr) {
 	return $statement;
 }
 
+function getSchoolId($schoolName) {
+	$query = "SELECT schoolID FROM Schools WHERE sname='{$schoolName}'";
+	$result = executePlainSQL($query);
+	$row = OCI_Fetch_Array($result, OCI_BOTH);
+
+	return $row[0];
+}
 
 $result = NULL;
 $success = True;
@@ -47,6 +54,20 @@ if (isset($_GET['endorse'])) {
 	$profileID = $_GET['acctID'];
 	$userID = $_GET['userID'];
 	$query = "INSERT INTO Endorsements VALUES({$userID}, {$profileID})";
+	$result = executePlainSQL($query);
+	OCICommit($db_conn);
+}
+
+if (isset($_GET['updateSchool'])) {
+	$profileID = $_GET['acctID'];
+	$userID = $_GET['userID'];
+	$newSchoolName = $_GET['newSchoolName'];
+	$newSchoolID = getSchoolId($newSchoolName);
+	if ($newSchoolID <= 0) {
+		exit("School does not exist");
+	}
+
+	$query = "UPDATE Students SET schoolID={$newSchoolID} WHERE acctID={$profileID}";
 	$result = executePlainSQL($query);
 	OCICommit($db_conn);
 }
@@ -73,6 +94,55 @@ if ($row['ISEMPLOYER']==0) {
 	$result = executePlainSQL($query);
 	printResultForEmployers($result, $profileID, $userID);
 }
+
+function printResult($result, $profileID){
+	global $userID;
+	global $avgScore;
+	while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+
+		echo $row["FNAME"] . " " . $row["LNAME"] . " - Average Score: " . $avgScore . "<br>" . $row["SNAME"] . $row["NAME"]. "<br><br>";
+		if ($userID == $profileID) {
+			echo '<form action="profile.php" method="GET"><input type="hidden" name="acctID" value=' . $profileID . '><input type="hidden" name="userID" value=' . $userID . '><input type="text" name="newSchoolName"><input type="submit" value="Update School" name="updateSchool"></form>';
+		}
+		
+		//Information for student profiles
+		if (!is_null($row["SNAME"])){
+			//ENDORSEMENTS
+			$endo = executePlainSQL("SELECT * FROM Endorsements End, Employers Emp, Companies Cmp WHERE End.studentID={$profileID} AND End.employerID=Emp.acctID AND Emp.companyID=Cmp.companyID");
+			echo "Endorsed by:";
+			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+				echo "<br>";
+				echo $e["NAME"];
+			}
+			echo "<br><br>";
+			
+			//REVIEWS		
+			echo "<table><tr><th>Reviews</th><th><a href=./reviews.php?revieweeID={$profileID}&reviewerID={$userID}>Post a review!</a></th></tr>";
+			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID={$profileID}");
+			
+			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){
+				$unprocesssedDate = $r["DATETIME"];
+				$processedDate = substr($unprocesssedDate, 0, 14);
+
+				echo "<tr><td>" . $r["DEPT"]. " ". $r ["COURSENO"] . " at " . $r["SNAME"];
+				echo "<br>Score: " . $r["SCORE"] . " Given by ";
+				
+				//find reviewer name
+				$otherID = $r["REVIEWERID"];
+				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ={$otherID}"); 
+				$o = OCI_Fetch_Array($other, OCI_BOTH);
+				$fullName = $o["FNAME"] . " " . $o["LNAME"];
+				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>"; //prints nothing
+				
+				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
+				echo "Posted at " . $processedDate;
+				echo "<br><br></tr></td>";
+			}
+			echo "</table>";
+		}
+	}
+}
+
 
 function printResultForEmployers($result, $profileID, $userID) {
 	global $avgScore;
@@ -120,51 +190,6 @@ function printResultForEmployers($result, $profileID, $userID) {
 				$o = OCI_Fetch_Array($other, OCI_BOTH);
 				$fullName = $o["FNAME"] . " " . $o["LNAME"];
 				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>";
-				
-				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
-				echo "Posted at " . $processedDate;
-				echo "<br><br></tr></td>";
-			}
-			echo "</table>";
-		}
-	}
-}
-
-function printResult($result, $profileID){
-	global $userID;
-	global $avgScore;
-	while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-
-		echo $row["FNAME"] . " " . $row["LNAME"] . " - Average Score: " . $avgScore . "<br>" . $row["SNAME"] . $row["NAME"]. "<br><br>";
-		
-		//Information for student profiles
-		if (!is_null($row["SNAME"])){
-			//ENDORSEMENTS
-			$endo = executePlainSQL("SELECT * FROM Endorsements End, Employers Emp, Companies Cmp WHERE End.studentID={$profileID} AND End.employerID=Emp.acctID AND Emp.companyID=Cmp.companyID");
-			echo "Endorsed by:";
-			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-				echo "<br>";
-				echo $e["NAME"];
-			}
-			echo "<br><br>";
-			
-			//REVIEWS		
-			echo "<table><tr><th>Reviews</th><th><a href=./reviews.php?revieweeID={$profileID}&reviewerID={$userID}>Post a review!</a></th></tr>";
-			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID={$profileID}");
-			
-			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){
-				$unprocesssedDate = $r["DATETIME"];
-				$processedDate = substr($unprocesssedDate, 0, 14);
-
-				echo "<tr><td>" . $r["DEPT"]. " ". $r ["COURSENO"] . " at " . $r["SNAME"];
-				echo "<br>Score: " . $r["SCORE"] . " Given by ";
-				
-				//find reviewer name
-				$otherID = $r["REVIEWERID"];
-				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ={$otherID}"); 
-				$o = OCI_Fetch_Array($other, OCI_BOTH);
-				$fullName = $o["FNAME"] . " " . $o["LNAME"];
-				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>"; //prints nothing
 				
 				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
 				echo "Posted at " . $processedDate;

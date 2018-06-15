@@ -236,7 +236,7 @@ span.psw {
 
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-$userID = 3;
+$userID = 1;
 // $userID = $_GET['userID']; // This should come from login
 
 function executePlainSQL($cmdstr) {
