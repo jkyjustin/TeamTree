@@ -135,6 +135,7 @@ function printResult($result, $profileID){
 				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>"; //prints nothing
 				
 				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
+				echo "Content: " . $r["CONTENT"] . "<br>";
 				echo "Posted at " . $processedDate;
 				echo "<br><br></tr></td>";
 			}
@@ -192,6 +193,7 @@ function printResultForEmployers($result, $profileID, $userID) {
 				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>";
 				
 				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
+				echo "Content: " . $r["CONTENT"] . "<br>";
 				echo "Posted at " . $processedDate;
 				echo "<br><br></tr></td>";
 			}
