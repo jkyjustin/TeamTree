@@ -1,11 +1,16 @@
+<?php
+	session_start();
+?>
 <html>
 <head>
-	<title> My Profile </title>
+	<title>Profile</title>
 </head>
 </html>
+
 <?php
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$profileID = $_GET['acctID'];
 
 function executePlainSQL($cmdstr) {
 	global $db_conn, $success;
@@ -30,74 +35,83 @@ function executePlainSQL($cmdstr) {
 	return $statement;
 }
 
-
-$var = $_GET['acctID'];
-//$var = 1;
 $result = NULL;
 
-$query = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE acctID ='{$var}'";
+$query = "SELECT AVG(SCORE) FROM REVIEWS WHERE REVIEWEEID={$profileID}";
 $result = executePlainSQL($query);
-printResult($result, $var);
+$row = OCI_Fetch_Array($result, OCI_BOTH);
+$avgScore = $row[0];
 
-$query = "SELECT * FROM Employers NATURAL JOIN Accounts NATURAL JOIN Companies WHERE acctID ='{$var}'";
+$query = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE acctID ={$profileID}";
+$result = executePlainSQL($query);
+printResult($result, $profileID);
+
+$query = "SELECT * FROM Employers NATURAL JOIN Accounts NATURAL JOIN Companies WHERE acctID ={$profileID}";
 $result = executePlainSQL($query);
 
 printResult($result);
 
-function printResult($result, $var){
+function printResult($result, $profileID){
+	global $avgScore;
 	while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		echo $row["FNAME"] . " " . $row["LNAME"] . "<br>" . $row["SNAME"] . $row["NAME"]. "<br><br>";
+
+		echo $row["FNAME"] . " " . $row["LNAME"] . " - Average Score: " . $avgScore . "<br>" . $row["SNAME"] . $row["NAME"]. "<br><br>";
 		
 		//Information for student profiles
 		if (!is_null($row["SNAME"])){
 			//ENDORSEMENTS
-			$endo = executePlainSQL("SELECT * FROM Endorsements NATURAL JOIN Students NATURAL JOIN Employers NATURAL JOIN Companies Where studentID ='{$var}'");
-			echo "These companies endorse " . $row["FNAME"] . ": ";
+			$endo = executePlainSQL("SELECT * FROM Endorsements End, Employers Emp, Companies Cmp WHERE End.studentID={$profileID} AND End.employerID=Emp.acctID AND Emp.companyID=Cmp.companyID");
+			echo "Endorsed by:";
 			while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
+				echo "<br>";
 				echo $e["NAME"];
 			}
+			echo "<br><br>";
 			
+			//REVIEWS		
+			echo "<table><tr><th>Reviews</th><th><a href=./reviews.php?revieweeID={$profileID}>Post a review!</a></th></tr>";
+			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID={$profileID}");
 			
-			//REVIEWS
-			echo "<br>Your Reviews <br>";
-			
-			echo "<table><tr><th>Received</th></tr>";
-			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID ='{$var}'");
-			
-			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){				
-				echo "<tr><td>" . $r["DEPT"]. " ". $r ["COURSENO"] . ", " . $r["SNAME"] . "<br>Given by ";
+			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){
+				$unprocesssedDate = $r["DATETIME"];
+				$processedDate = substr($unprocesssedDate, 0, 14);
+
+				echo "<tr><td>" . $r["DEPT"]. " ". $r ["COURSENO"] . " at " . $r["SNAME"];
+				echo "<br>Score: " . $r["SCORE"] . " Given by ";
 				
 				//find reviewer name
 				$otherID = $r["REVIEWERID"];
-				echo $otherID;
-				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ='{$otherID}'"); 
-				while ($o = OCI_Fetch_Array($other, OCI_BOTH));
-				echo $o["FNAME"] . " " . $o["LNAME"] . "<br>"; //prints nothing
+				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ={$otherID}"); 
+				$o = OCI_Fetch_Array($other, OCI_BOTH);
+				$fullName = $o["FNAME"] . " " . $o["LNAME"];
+				echo "<a href=./profile.php?acctID={$otherID}>{$fullName}</a>" . "<br>"; //prints nothing
 				
-				echo "Assignment: " . $r["ASSIGNMENTDESC"] . " Score: " . $r["SCORE"] . "<br>";
-				echo $r["CONTENT"] . "<br> Likes: " . $r["NUMLIKES"] . " Dislikes: " . $r["NUMDISLIKES"] . " " . $r["DATETIME"];
-				echo "</tr></td>";
+				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
+				// echo $r["CONTENT"] . "<br> Likes: " . $r["NUMLIKES"] . " Dislikes: " . $r["NUMDISLIKES"];
+				// echo "<br>";
+				echo "Posted at " . $processedDate;
+				echo "<br><br></tr></td>";
 			}
 			echo "</table>";
 			
-			echo "<table><tr><th>Given</th></tr>";
-			$given = executePlainSQL("SELECT DISTINCT reviewID,revieweeID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE reviewerID ='{$var}'");
+			// echo "<table><tr><th>Given</th></tr>";
+			// $given = executePlainSQL("SELECT DISTINCT reviewID,revieweeID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE reviewerID ='{$profileID}'");
 			
-			while ($g = OCI_Fetch_Array($given, OCI_BOTH)){				
-				echo "<tr><td>" . $g["DEPT"]. " ". $g ["COURSENO"] . ", " . $g["SNAME"] . "<br>Given by ";
+			// while ($g = OCI_Fetch_Array($given, OCI_BOTH)){				
+			// 	echo "<tr><td>" . $g["DEPT"]. " ". $g ["COURSENO"] . ", " . $g["SNAME"] . "<br>Given by ";
 				
-				//find reviewee name
-				$otherID = $g["REVIEWEEID"];
-				echo $otherID;
-				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ='{$otherID}'"); 
-				while ($o = OCI_Fetch_Array($other, OCI_BOTH));
-				echo $o["FNAME"] . " " . $o["LNAME"] . "<br>"; //prints nothing
+			// 	//find reviewee name
+			// 	$otherID = $g["REVIEWEEID"];
+			// 	echo $otherID;
+			// 	$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ='{$otherID}'"); 
+			// 	while ($o = OCI_Fetch_Array($other, OCI_BOTH));
+			// 	echo $o["FNAME"] . " " . $o["LNAME"] . "<br>"; //prints nothing
 				
-				echo "Assignment: " . $g["ASSIGNMENTDESC"] . " Score: " . $g["SCORE"] . "<br>";
-				echo $g["CONTENT"] . "<br> Likes: " . $g["NUMLIKES"] . " Dislikes: " . $g["NUMDISLIKES"] . " " . $g["DATETIME"];
-				echo "</tr></td>";
-			}
-			echo "</table>";
+			// 	echo "Assignment: " . $g["ASSIGNMENTDESC"] . " Score: " . $g["SCORE"] . "<br>";
+			// 	echo $g["CONTENT"] . "<br> Likes: " . $g["NUMLIKES"] . " Dislikes: " . $g["NUMDISLIKES"] . " " . $g["DATETIME"];
+			// 	echo "</tr></td>";
+			// }
+			// echo "</table>";
 			
 		}
 		//information for employer profiles

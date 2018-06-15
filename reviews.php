@@ -1,3 +1,10 @@
+<?php
+	// session_start();
+	// var_dump(session_id());
+	// phpinfo();
+	// $_SESSION['reeID'] = $_GET['revieweeID'];
+	// echo $_SESSION['revieweeID'];
+?>
 <html>
 <body>
 
@@ -33,6 +40,10 @@
 		</tr>
 
 		<tr>
+			<td align="left"><input type="hidden" name="revieweeToken" value="<?=$_GET['revieweeID'];?>" /></td>
+		</tr>
+
+		<tr>
 			<td>  </td>
 			<td colspan="2" align="left"><input type="submit" name="Submit"/></td>
 		</tr>
@@ -46,7 +57,7 @@
 	// db login
 	$success = True;
 	$db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-	
+
 	function executePlainSQL($cmdstr) {
 		global $db_conn, $success;
 		$statement = OCIParse($db_conn, $cmdstr);
@@ -99,20 +110,15 @@
 
 	if ($db_conn) {
 		if (isset($_POST['Submit'])) {
-
-			session_start(); 
-
 			if ($_SESSION['loggedInUserId']) {
-
 				$reviewerId = $_SESSION('loggedInUserId');
-
 			} else {
-					echo "\nUnable to confirm session, please re-log in.";
-					// exit("Unable to confirm session, please re-log in."); // TODO Change to exit() later
-					$reviewerId = 2;	// TODO: placeholder, set this to -1 once profile is working w/ sessions
+					// exit("Unable to confirm session, please re-log in."); // TODO uncomment after login
+					// $success = false;
+					$reviewerId = 1;
 			}
 
-			$revieweeId = 1;	// TODO: set to revieweeID from profile.php
+			$revieweeId = $_POST["revieweeToken"];
 
 			if ($reviewerId == $revieweeId) {
 				exit("Cannot post reviews on your own profile.");
