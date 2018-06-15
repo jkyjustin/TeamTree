@@ -40,10 +40,14 @@
 		</tr>
 
 		<tr>
-			<td align="left"><input type="hidden" name="revieweeToken" value="<?=$_GET['revieweeID'];?>" /></td>
+			<td><input type="hidden" name="revieweeToken" value="<?=$_GET['revieweeID'];?>" /></td>
 		</tr>
 
 		<tr>
+			<td><input type="hidden" name="reviewerToken" value="<?=$_GET['reviewerID'];?>" /></td>
+		</tr>
+		<tr>
+
 			<td>  </td>
 			<td colspan="2" align="left"><input type="submit" name="Submit"/></td>
 		</tr>
@@ -110,14 +114,7 @@
 
 	if ($db_conn) {
 		if (isset($_POST['Submit'])) {
-			if ($_SESSION['loggedInUserId']) {
-				$reviewerId = $_SESSION('loggedInUserId');
-			} else {
-					// exit("Unable to confirm session, please re-log in."); // TODO uncomment after login
-					// $success = false;
-					$reviewerId = 1;
-			}
-
+			$reviewerId = $_POST["reviewerToken"];
 			$revieweeId = $_POST["revieweeToken"];
 
 			if ($reviewerId == $revieweeId) {

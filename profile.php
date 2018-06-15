@@ -53,7 +53,7 @@ if (isset($_GET['endorse'])) {
 
 $profileID = $_GET['acctID'];
 // $userID = $_GET['userID'];
-$userID = 7;
+$userID = 4;
 
 $query = "SELECT AVG(SCORE) FROM REVIEWS WHERE REVIEWEEID={$profileID}";
 $result = executePlainSQL($query);
@@ -127,21 +127,11 @@ function printResultForEmployers($result, $profileID, $userID) {
 			}
 			echo "</table>";
 		}
-		//information for employer profiles
-		// else if (!is_null($row["NAME"])){
-		// 	$cid = $row["COMPANYID"];
-		// 	$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
-		// 	echo "<table><tr><th>Endorsing:</th></tr>";
-		// 	while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-		// 		$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
-		// 		echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
-		// 	}
-		// 	echo "</table>";
-		// }
 	}
 }
 
 function printResult($result, $profileID){
+	global $userID;
 	global $avgScore;
 	while($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 
@@ -159,7 +149,7 @@ function printResult($result, $profileID){
 			echo "<br><br>";
 			
 			//REVIEWS		
-			echo "<table><tr><th>Reviews</th><th><a href=./reviews.php?revieweeID={$profileID}>Post a review!</a></th></tr>";
+			echo "<table><tr><th>Reviews</th><th><a href=./reviews.php?revieweeID={$profileID}&reviewerID={$userID}>Post a review!</a></th></tr>";
 			$receive = executePlainSQL("SELECT DISTINCT reviewID,reviewerID,courseNo,dept,sname,score,assignmentDesc,content,numLikes,numDislikes,datetime FROM Students NATURAL JOIN Accounts NATURAL JOIN Reviews NATURAL JOIN Schools WHERE revieweeID={$profileID}");
 			
 			while ($r = OCI_Fetch_Array($receive, OCI_BOTH)){
@@ -182,17 +172,6 @@ function printResult($result, $profileID){
 			}
 			echo "</table>";
 		}
-		//information for employer profiles
-		// else if (!is_null($row["NAME"])){
-		// 	$cid = $row["COMPANYID"];
-		// 	$endo = executePlainSQL("SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Endorsements NATURAL JOIN Companies WHERE companyID ='{$cid}'");
-		// 	echo "<table><tr><th>Endorsing:</th></tr>";
-		// 	while ($e = OCI_Fetch_Array($endo, OCI_BOTH)){
-		// 		$profileLink = "<a href=profile.php?acctID=" . $e["ACCTID"] . "> View Profile </a>";
-		// 		echo "<tr><td>" . $e["FNAME"] . " " . $e["LNAME"] . " " .  $profileLink . "</td></tr>";
-		// 	}
-		// 	echo "</table>";
-		// }
 	}
 }
 ?>
