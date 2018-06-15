@@ -236,6 +236,8 @@ span.psw {
 
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$userID = 3;
+// $userID = $_GET['userID']; // This should come from login
 
 function executePlainSQL($cmdstr) {
 	global $db_conn, $success;
@@ -261,12 +263,13 @@ function executePlainSQL($cmdstr) {
 }
 
 function printResult($result) { //prints results from a select statement
+	global $userID;
 	echo '<div class = "body"><br>Search results:<br>';
 	echo "<table>";
 	echo "<tr><th>First Name</th><th>Last Name</th><th>School</th></tr>";
 
 	while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-		$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "> View Profile </a>";
+		$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "&userID=" . $userID . "> View Profile </a>";
 		echo "<tr><td>" . $row["FNAME"] . "</td><td>" . $row["LNAME"] . "</td><td>" . $row["SNAME"] . "</td><td>" . $profileLink . "</td></tr>";
 	}
 	echo "</table></div>";

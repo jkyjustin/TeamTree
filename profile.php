@@ -52,8 +52,8 @@ if (isset($_GET['endorse'])) {
 }
 
 $profileID = $_GET['acctID'];
-// $userID = $_GET['userID'];
-$userID = 4;
+$userID = $_GET['userID'];
+// $userID = 4;
 
 $query = "SELECT AVG(SCORE) FROM REVIEWS WHERE REVIEWEEID={$profileID}";
 $result = executePlainSQL($query);
@@ -119,7 +119,7 @@ function printResultForEmployers($result, $profileID, $userID) {
 				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ={$otherID}"); 
 				$o = OCI_Fetch_Array($other, OCI_BOTH);
 				$fullName = $o["FNAME"] . " " . $o["LNAME"];
-				echo "<a href=./profile.php?acctID={$otherID}>{$fullName}</a>" . "<br>"; //prints nothing
+				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>";
 				
 				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
 				echo "Posted at " . $processedDate;
@@ -164,7 +164,7 @@ function printResult($result, $profileID){
 				$other = executePlainSQL("SELECT fname,lname FROM Accounts WHERE acctID ={$otherID}"); 
 				$o = OCI_Fetch_Array($other, OCI_BOTH);
 				$fullName = $o["FNAME"] . " " . $o["LNAME"];
-				echo "<a href=./profile.php?acctID={$otherID}>{$fullName}</a>" . "<br>"; //prints nothing
+				echo "<a href=./profile.php?acctID={$otherID}&userID={$userID}>{$fullName}</a>" . "<br>"; //prints nothing
 				
 				echo "Assignment Description: " . $r["ASSIGNMENTDESC"] . "<br>";
 				echo "Posted at " . $processedDate;
