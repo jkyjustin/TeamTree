@@ -40,18 +40,57 @@ input[type=text], input[type=password] {
 .navbar button{
   position: top;
   border-radius: 30%;
+  padding: 16px;
+  font-size: 16px;
 }
-.navbar img{
+.dropbtn {
+    position: top;
+    border-radius: 30%;
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
 }
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
 
 /* Style for navbar */
 .body {
+  background:white url("image/backg3.png") no-repeat left top;
   width: 100%;
   padding: 300px;
-  background-image: url("image/backg3.png");
-  background-repeat: no-repeat;
-  background-position: left top;
-  background-blend-mode: lighten;
 }
 
 /* Set a style for all buttons */
@@ -172,6 +211,12 @@ span.psw {
 <div class = "navbar">
   <button onclick="document.getElementById('id01').style.display='block'"
   style="width:auto;">Login</button>
+
+  <button onclick="dropMenu()" class="dropbtn" style="width:auto;">Register</button>
+  <div id="drop" class="dropdown-content">
+  <a href="#Student_registrationpage">Student</a>
+  <a href="#Employer_registrationpage">Employer</a>
+
 </div>
 
 <div class = "body">
@@ -179,7 +224,8 @@ span.psw {
 
 <div id="id01" class="modal">
 
-  <form class="modal-content animate" action="/action_page.php">
+  <form class="modal-content animate" action="" method="post">
+
     <div class="imgcontainer">
       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
       <img src="image/t1.png" alt="Tree" class="avatar">
@@ -192,7 +238,7 @@ span.psw {
       <label for="psw"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="psw" required>
 
-      <button type="submit">Login</button>
+      <button type="submit" name="submit" >Login</button>
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
       </label>
@@ -206,13 +252,35 @@ span.psw {
 </div>
 
 <script>
-// Get the modal
-var modal = document.getElementById('id01');
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
+function dropMenu(){
+    document.getElementById("drop").classList.toggle("show");
+}
+
+window.onclick = function(event)
+{
+    // Get the modal
+    var modal = document.getElementById('id01');
+
+    // When the user clicks anywhere outside of the modal, close it
+    if (event.target == modal)
+    {
         modal.style.display = "none";
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    else if (!event.target.matches('.dropbtn'))
+    {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++)
+      {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show'))
+        {
+          openDropdown.classList.remove('show');
+        }
+      }
     }
 }
 </script>
@@ -220,7 +288,39 @@ window.onclick = function(event) {
 </body>
 </html>
 
+
 <?php
-  session_start();
-  // $_SESSION['loggedInUserId'] = <PLACE THE LOGGED IN USER ID HERE>;
+   //include("session.php");        //include this on profile page 
+   session_start();
+   
+   if($_SERVER["REQUEST_METHOD"] == "POST") 
+   {
+      // username and password sent from form 
+      $user = $_POST['uname'];
+      $password = $_POST['psw'];
+      
+      $queryStr = "SELECT COUNT(*) FROM Accounts WHERE email='{$user}' AND password='{$pass}'";
+      $result = executePlainSQL($queryStr);
+      $row = OCI_Fetch_Array($result, OCI_BOTH);
+  
+      $count = $row[1];
+      
+      // If result matched $user and $password, table row must be 1 row
+      if($count == 1) 
+      {
+        $queryString = "SELECT acctid FROM Accounts WHERE email='{$user}' AND password='{$password}'";
+        $res = executePlainSQL($queryString);
+        $userRow = OCI_Fetch_Array($res, OCI_BOTH);
+
+        $userid = $userRow['ACCTID'];
+        session_register("userid");
+        $_SESSION['login_id'] = $userid;
+         
+        header("location: profile.php");
+      }else 
+      {
+         $error = "Your Login Name or Password is invalid";
+      }
+   }
 ?>
+
