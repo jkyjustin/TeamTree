@@ -3,7 +3,6 @@
    $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
    session_start();
 
-   $success = True;
    function executePlainSQL($cmdstr) 
 	{
 	  global $db_conn, $success;
@@ -40,8 +39,8 @@
     $login_lname = $row['LNAME'];
     $login_type = $row['ISEMPLOYER'];
 
-   	if(!isset($_SESSION['login_user']))
-   	{
-      header("location:index.php");
-   	}
+   	// if(!isset($_SESSION['login_id']))
+   	// {
+    //   header('location: index.php');
+   	// }
 ?>

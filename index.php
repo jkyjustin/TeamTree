@@ -1,3 +1,5 @@
+
+<?php   session_start();  ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,47 +211,21 @@ span.psw {
 </div>
 
 <div class = "navbar">
-  <button onclick="document.getElementById('id01').style.display='block'"
-  style="width:auto;">Login</button>
+
+
+    <button onclick="location.href='login.php'" style="width:auto;">Login</button>
+ 
 
   <button onclick="dropMenu()" class="dropbtn" style="width:auto;">Register</button>
   <div id="drop" class="dropdown-content">
-  <a href="#Student_registrationpage">Student</a>
-  <a href="#Employer_registrationpage">Employer</a>
+  <a href="registerstudent.php">Student</a>
+  <a href="registeremployer.php">Employer</a>
 
 </div>
 
 <div class = "body">
 </div>
 
-<div id="id01" class="modal">
-
-  <form class="modal-content animate" action="" method="post">
-
-    <div class="imgcontainer">
-      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-      <img src="image/t1.png" alt="Tree" class="avatar">
-    </div>
-
-    <div class="container">
-      <label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-
-      <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
-
-      <button type="submit" name="submit" >Login</button>
-      <label>
-        <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
-    </div>
-
-    <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-      <span class="psw">Forgot <a href="#">password?</a></span>
-    </div>
-  </form>
-</div>
 
 <script>
 
@@ -289,38 +265,4 @@ window.onclick = function(event)
 </html>
 
 
-<?php
-   //include("session.php");        //include this on profile page 
-   session_start();
-   
-   if($_SERVER["REQUEST_METHOD"] == "POST") 
-   {
-      // username and password sent from form 
-      $user = $_POST['uname'];
-      $password = $_POST['psw'];
-      
-      $queryStr = "SELECT COUNT(*) FROM Accounts WHERE email='{$user}' AND password='{$pass}'";
-      $result = executePlainSQL($queryStr);
-      $row = OCI_Fetch_Array($result, OCI_BOTH);
-  
-      $count = $row[1];
-      
-      // If result matched $user and $password, table row must be 1 row
-      if($count == 1) 
-      {
-        $queryString = "SELECT acctid FROM Accounts WHERE email='{$user}' AND password='{$password}'";
-        $res = executePlainSQL($queryString);
-        $userRow = OCI_Fetch_Array($res, OCI_BOTH);
-
-        $userid = $userRow['ACCTID'];
-        session_register("userid");
-        $_SESSION['login_id'] = $userid;
-         
-        header("location: profile.php");
-      }else 
-      {
-         $error = "Your Login Name or Password is invalid";
-      }
-   }
-?>
 
