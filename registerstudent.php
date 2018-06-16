@@ -1,11 +1,79 @@
-<!DOCTYPE HTML>  
 <html>
-<head>
 <style>
+body {  
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+table {
+  border-spacing: 7px;
+}
 .error {color: #FF0000;}
+/* Style the header */
+.header {
+    background-color: white;
+    padding: 60px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: 300px 130px, 600px 600px;
+    background-image: url("image/logo.png"), url("image/backg.jpg");
+    background-position: left, right;
+    background:cover;
+}
+
+/* Style the top navigation bar */
+.navbar {
+    overflow: hidden;
+    padding-top: 0px;
+    background-color: #333;
+    color: #228b22;
+}
+
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
-</head>
-<body>  
+<body>
+
+  <div class="header">
+  </div>
+
+  <div class = "navbar">
+    <table><tr style="color: green;">
+      <td width="68%"><h2>Register an Employer Account</h2></td>
+      <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
+      <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
+      <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+    </tr></table>
+  </div>
+
+  <p><span class="error">* required field</span></p>
+  <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+    First Name: <input type="text" name="firstname" value="<?php echo $firstname;?>">
+    <span class="error">* <?php echo $firstnameErr;?></span>
+    <br><br>
+    Last Name: <input type="text" name="lastname" value="<?php echo $lastname;?>">
+    <span class="error">* <?php echo $lastnameErr;?></span>
+    <br><br>
+    E-mail: <input type="text" name="email" value="<?php echo $email;?>">
+    <span class="error">* <?php echo $emailErr;?></span>
+    <br><br>
+    Password: <input type="text" name="password" value="<?php echo $password;?>">
+    <span class="error">* <?php echo $passwordErr;?></span>
+    <br><br>
+    School: <input type="text" name="school" value="<?php echo $school;?>">
+    <span class="error">* <?php echo $schoolErr;?></span>
+    <br><br>
+    <input type="submit" name="submit" value="Submit">  
+  </form>
+
+</body>
+</html>
 
 <?php
 $firstnameErr = $lastname = $emailErr = $passwordErr = $schoolErr = "";
@@ -90,14 +158,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(get_query_count($queryStr) > 0){
       echo "This combination of first name, last name and email are taken";
     } else {
-      $account_id = get_query_count("SELECT * FROM Accounts") + 1;
-      $student_id = get_query_count("SELECT * FROM Students") + 1;
-      executePlainSQL("INSERT INTO Accounts VALUES('{$account_id}', '{$firstname}', '{$lastname}', '{$email}', '{$password}', 0)");
-      executePLainSQL("INSERT INTO Students VALUES ('{$student_id}', '{$schoolId}')");
+      $account_id = generateAcctId();
+      executePlainSQL("INSERT INTO Accounts VALUES({$account_id}, '{$firstname}', '{$lastname}', '{$email}', '{$password}', 0)");
+      executePLainSQL("INSERT INTO Students VALUES ({$account_id}, '{$schoolId}')");
       OCI_commit($db_conn);
-      header("Location:./index.php");
+      header('Location: ./index.php');
     }
   }
+}
+
+function generateAcctId() {
+  $query = "SELECT MAX(ACCTID) FROM ACCOUNTS";
+  $result = executePlainSQL($query);
+  $num = OCI_Fetch_Array($result);
+  return $num[0] + 1;
 }
 
 function get_query_count($input) {
@@ -115,42 +189,3 @@ function test_input($data) {
   return $data;
 }
 ?>
-
-<h2>Create Student Account</h2>
-<p><span class="error">* required field</span></p>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-  First Name: <input type="text" name="firstname" value="<?php echo $firstname;?>">
-  <span class="error">* <?php echo $firstnameErr;?></span>
-  <br><br>
-  Last Name: <input type="text" name="lastname" value="<?php echo $lastname;?>">
-  <span class="error">* <?php echo $lastnameErr;?></span>
-  <br><br>
-  E-mail: <input type="text" name="email" value="<?php echo $email;?>">
-  <span class="error">* <?php echo $emailErr;?></span>
-  <br><br>
-  Password: <input type="text" name="password" value="<?php echo $password;?>">
-  <span class="error">* <?php echo $passwordErr;?></span>
-  <br><br>
-  School: <input type="text" name="school" value="<?php echo $school;?>">
-  <span class="error">* <?php echo $schoolErr;?></span>
-  <br><br>
-  <input type="submit" name="submit" value="Submit">  
-</form>
-
-<?php
-echo "<h2>Your Input:</h2>";
-echo $firstname;
-echo "<br>";
-echo $lastname;
-echo "<br>";
-echo $email;
-echo "<br>";
-echo $password;
-echo "<br>";
-echo $school;
-echo "<br";
-echo $result;
-?>
-
-</body>
-</html>

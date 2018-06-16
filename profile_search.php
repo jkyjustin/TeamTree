@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php
+	setcookie("userID", 1, time() + 1800, "/");
+?>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -165,6 +167,14 @@ span.psw {
        width: 100%;
     }
 }
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
 </head>
 <body>
@@ -173,9 +183,12 @@ span.psw {
 </div>
 
 <div class = "navbar">
-<!--   <button onclick="document.getElementById('id01').style.display='block'"
-  style="width:auto;">Login</button> -->
-  <h2> Find a Classmate!</h2>
+  <table><tr style="color: green;">
+    <td width="68%"><h2>Find a Classmate!</h2></td>
+    <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
+    <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
+    <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+  </tr></table>
 </div>
 
 <div class = "body">
@@ -203,41 +216,10 @@ span.psw {
 </body>
 </html>
 
-<!-- <html>
-<head>
-	<title> Find a classmate! </title>
-</head>
-<body>
-	<h2> Find a Classmate! </h2>
-	<form action="profile_search.php" method="GET">
-		<table>
-			<tr>
-				<td>First Name:</td>
-				<td><input type="text" name="fname"></td>
-			</tr>
-			<tr>
-				<td>Last Name*:</td>
-				<td><input type="text" name="lname"></td>
-			</tr>
-			<tr>
-				<td>School:</td>
-				<td><input type="text" name="school"></td>
-			</tr>
-			<tr>
-				<td><input type ="submit" name="submit" value="Search!" ></td>
-			</tr>
-		</table>
-	</form>
-	<p> * Optional </p>
-</body>
-</html> -->
-
 <?php
-
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-$userID = 1;
-// $userID = $_GET['userID']; // This should come from login
+$userID = $_COOKIE['userID'];
 
 function executePlainSQL($cmdstr) {
 	global $db_conn, $success;
@@ -288,19 +270,19 @@ if (isset($_GET['submit'])) {
 	if (empty($lname) && empty($fname) && empty($sname)) {
 		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
 	} else if (empty($lname) && empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE sname='{$sname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else if (empty($lname) && empty($sname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND isEmployer=0";
 	} else if (empty($sname) && empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE lname='{$lname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
 	} else if (empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE lname='{$lname}' AND sname='{$sname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else if (empty($sname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}' AND lname='{$lname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
 	} else if (empty($lname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE fname='{$fname}' AND sname='{$sname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else {	// Query on just fname
-		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE fname='{$fname}' AND lname='{$lname}' AND sname='{$sname}' AND isEmployer=0";
+		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	}
 
 	$result = executePlainSQL($queryStr);
