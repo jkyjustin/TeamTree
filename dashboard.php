@@ -92,17 +92,18 @@ function generateSchoolTable() {
 }
 
 function generateLowHighAvgTable($id) {
-  $high_query = executePlainSQL("SELECT r.SCORE FROM REVIEWS r WHERE r.SCHOOLID = '{$id}' AND r.SCORE >= ALL (SELECT r1.SCORE FROM REVIEWS r1, REVIEWS r2 WHERE r1.SCORE <= r2.SCORE AND r1.REVIEWID != r2.REVIEWID)");
+  $sql_statement = "SELECT r.SCORE FROM REVIEWS r WHERE r.SCHOOLID = '{$id}' AND r.SCORE NOT IN ";
+  $high_query = executePlainSQL($sql_statement."(SELECT r1.SCORE FROM REVIEWS r1, REVIEWS r2 WHERE r1.SCORE < r2.SCORE)");
+  $low_query = executePlainSQL($sql_statement."(SELECT r1.SCORE FROM REVIEWS r1, REVIEWS r2 WHERE r1.SCORE > r2.SCORE)");
   $avg_query = executePlainSQL("SELECT AVG(r.SCORE) FROM REVIEWS r WHERE r.SCHOOLID = '{$id}'");
-  $low_query = executePlainSQL("SELECT r.SCORE FROM REVIEWS r WHERE r.SCHOOLID = '{$id}' AND r.SCORE <= ALL (SELECT r1.SCORE FROM REVIEWS r1, REVIEWS r2 WHERE r1.SCORE >= r2.SCORE AND r1.REVIEWID != r2.REVIEWID)");
 
   $high = OCI_Fetch_Array($high_query, OCI_BOTH);
-  $avg = OCI_Fetch_Array($avg_query, OCI_BOTH);
   $low = OCI_Fetch_Array($low_query, OCI_BOTH);
+  $avg = OCI_Fetch_Array($avg_query, OCI_BOTH);
 
-  $table = '<table border="1"><td><p>Low = ' .$low[0];
-  $table .= '</p></td><td><p>High = ' .$high[0];
-  $table .= '</p></td><td><p>Avg = ' .$avg[0] .'</p></td>';
+  $table = '<table border="1"><td><p>Low = '.$low[0];
+  $table .= '</p></td><td><p>High = '.$high[0];
+  $table .= '</p></td><td><p>Avg = '.$avg[0] .'</p></td>';
 
   return $table;
 }
