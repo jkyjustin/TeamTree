@@ -1,11 +1,206 @@
-<!DOCTYPE HTML>  
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+body {  
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+/* Full-width input fields */
+/*input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}*/
+table {
+  border-spacing: 7px;
+}
 .error {color: #FF0000;}
+/* Style the header */
+.header {
+    background-color: white;
+    padding: 60px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: 300px 130px, 600px 600px;
+    background-image: url("image/logo.png"), url("image/backg.jpg");
+    background-position: left, right;
+    background:cover;
+}
+
+/* Style the top navigation bar */
+.navbar {
+    overflow: hidden;
+    padding-top: 0px;
+    background-color: #333;
+    color: #228b22;
+}
+
+.navbar button{
+  position: top;
+  border-radius: 30%;
+}
+.navbar img{
+}
+
+/* Style for navbar */
+.abc {
+  width: 100%;
+  padding: 300px;
+  background-image: url("image/backg3.png");
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-blend-mode: lighten;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+img.avatar {
+    width: 15%;
+    border-radius: 50%;
+}
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
+}
 </style>
 </head>
-<body>  
+<body>
+
+<div class="header">
+</div>
+
+<div class = "navbar">
+<!--   <button onclick="document.getElementById('id01').style.display='block'"
+  style="width:auto;">Login</button> -->
+
+  <h2>Register an Employer Account</h2>
+</div>
+
+<div class = "body">
+  <p><span class="error">* required field</span></p>
+  <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+    First Name: <input type="text" name="firstname" value="<?php echo $firstname;?>">
+    <span class="error">* <?php echo $firstnameErr;?></span>
+    <br><br>
+    Last Name: <input type="text" name="lastname" value="<?php echo $lastname;?>">
+    <span class="error">* <?php echo $lastnameErr;?></span>
+    <br><br>
+    E-mail: <input type="text" name="email" value="<?php echo $email;?>">
+    <span class="error">* <?php echo $emailErr;?></span>
+    <br><br>
+    Password: <input type="text" name="password" value="<?php echo $password;?>">
+    <span class="error">* <?php echo $passwordErr;?></span>
+    <br><br>
+    Company: <input type="text" name="company" value="<?php echo $company;?>">
+    <span class="error">* <?php echo $companyErr;?></span>
+    <br><br>
+    <input type="submit" name="submit" value="Submit">  
+  </form></div>
+</body>
+</html>
 
 <?php
 $firstnameErr = $lastname = $emailErr = $passwordErr = $companyErr = "";
@@ -73,7 +268,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
       $result = executePlainSQL("SELECT companyID FROM Companies WHERE UPPER(name) = UPPER('{$_POST["company"]}')");
       $rslt2 = OCI_Fetch_Array($result, OCI_BOTH);
-      $companyId = $rslt2["companyID"];
+      $companyId = $rslt2["COMPANYID"];
       $company = test_input($_POST["company"]);
     }
   }
@@ -90,14 +285,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(get_query_count($queryStr) > 0){
       echo "This combination of first name, last name and email are taken";
     } else {
-      $account_id = get_query_count("SELECT * FROM Accounts") + 1;
-      $employer_id = get_query_count("SELECT * FROM Employers") + 1;
-      executePlainSQL("INSERT INTO Accounts VALUES('{$account_id}', '{$firstname}', '{$lastname}', '{$email}', '{$password}', 0)");
-      executePLainSQL("INSERT INTO Employers VALUES ('{$employer_id}', '{$companyId}')");
+      $account_id = generateAcctId();
+      executePlainSQL("INSERT INTO Accounts VALUES({$account_id}, '{$firstname}', '{$lastname}', '{$email}', '{$password}', 0)");
+      executePLainSQL("INSERT INTO Employers VALUES ({$account_id}, {$companyId})");
       OCI_commit($db_conn);
-      header("Location:./index.php");
+      header('Location: index.php');
     }
   }
+}
+
+function generateAcctId() {
+  $query = "SELECT MAX(ACCTID) FROM ACCOUNTS";
+  $result = executePlainSQL($query);
+  $num = OCI_Fetch_Array($result);
+  return $num[0] + 1;
 }
 
 function get_query_count($input) {
@@ -115,42 +316,3 @@ function test_input($data) {
   return $data;
 }
 ?>
-
-<h2>Create Student Account</h2>
-<p><span class="error">* required field</span></p>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-  First Name: <input type="text" name="firstname" value="<?php echo $firstname;?>">
-  <span class="error">* <?php echo $firstnameErr;?></span>
-  <br><br>
-  Last Name: <input type="text" name="lastname" value="<?php echo $lastname;?>">
-  <span class="error">* <?php echo $lastnameErr;?></span>
-  <br><br>
-  E-mail: <input type="text" name="email" value="<?php echo $email;?>">
-  <span class="error">* <?php echo $emailErr;?></span>
-  <br><br>
-  Password: <input type="text" name="password" value="<?php echo $password;?>">
-  <span class="error">* <?php echo $passwordErr;?></span>
-  <br><br>
-  Company: <input type="text" name="company" value="<?php echo $company;?>">
-  <span class="error">* <?php echo $companyErr;?></span>
-  <br><br>
-  <input type="submit" name="submit" value="Submit">  
-</form>
-
-<?php
-echo "<h2>Your Input:</h2>";
-echo $firstname;
-echo "<br>";
-echo $lastname;
-echo "<br>";
-echo $email;
-echo "<br>";
-echo $password;
-echo "<br>";
-echo $company;
-echo "<br";
-echo $result;
-?>
-
-</body>
-</html>
