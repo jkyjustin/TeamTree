@@ -29,21 +29,18 @@ table {
 /* Style the top navigation bar */
 .navbar {
     overflow: hidden;
-    padding-top: 0px;
-    padding-bottom:0px;
     background-color: #333;
     color: #228b22;
 }
-
+.navbar button{
+  position: top;
+  border-radius: 30%;
+}
 
 .search {background-color: #abb868;} 
 .dash{background-color: #6c804b;} 
 .log {background-color: #940016;} 
 
-.navbar h2{
-    padding-top:0px;
-    padding-bottom:0px;
-}
 
 button {
     background-color: #4CAF50;
@@ -61,27 +58,6 @@ button:hover {
     opacity: 0.8;
 }
 
-/* Extra styles for the cancel button */
-.cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-}
-
-/* Center the image and position the close button */
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-    position: relative;
-}
-
-.navbar img{
-    padding-right:0px;
-}
-
-.container {
-    padding: 16px;
-}
 
 a:link {
     color: green;

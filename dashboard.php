@@ -7,6 +7,18 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  background:white url("image/backg3.png") no-repeat left top;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius:30%;
+    cursor: pointer;
+    width: 100%;
+    font-size:16px;
 }
 
 /* Style the header */
@@ -24,35 +36,20 @@ body {
 /* Style the top navigation bar */
 .navbar {
     overflow: hidden;
-    padding-top: 0px;
     background-color: #333;
 }
+
+.search {background-color: #abb868;} 
+.dash{background-color: #6c804b;} 
+.log {background-color: #940016;} 
+
 
 .navbar button{
   position: top;
   border-radius: 30%;
 }
 
-/* Style for navbar */
-.body {
-  width: 100%;
-  padding: 300px;
-  background-image: url("image/backg3.png");
-  background-repeat: no-repeat;
-  background-position: left top;
-  background-blend-mode: lighten;
-}
 
-/* Set a style for all buttons */
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
 a:link {
     color: green;
 }
@@ -72,10 +69,10 @@ a:visited {
 
 <div class = "navbar">
   <table><tr style="color: green;">
-    <td width="68%"><h2>Dashboard</h2></td>
-    <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
-    <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
-    <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+    <td width="67%"><img src="image/dashh.gif" alt="dash" style="width:300px;height:60px;border:0"></td>
+    <td><button class="button search" onclick="location.href='./profile_search.php'" style="width:auto;">Search Students</button><td>
+    <td><button class="button dash" onclick="location.href='./dashboard.php'" style="width:auto;">Dashboard</button><td>
+    <td><button class="button log" onclick="location.href='index.php'" style="width:auto;">Logout</button><td>
   </tr></table>
 </div>
 

@@ -3,6 +3,7 @@
 body {  
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  background:white url("image/backg3.png") no-repeat left top;
 }
 
 table {
@@ -21,13 +22,27 @@ table {
     background:cover;
 }
 
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius:30%;
+    cursor: pointer;
+    width: 100%;
+    font-size:16px;
+}
+
 /* Style the top navigation bar */
 .navbar {
     overflow: hidden;
-    padding-top: 0px;
     background-color: #333;
     color: #228b22;
 }
+
+.search {background-color: #abb868;} 
+.dash{background-color: #6c804b;} 
+.log {background-color: #940016;} 
 
 a:link {
     color: green;
@@ -45,10 +60,11 @@ a:visited {
 
   <div class = "navbar">
     <table><tr style="color: green;">
-      <td width="68%"><h2>Register a Student Account</h2></td>
-      <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
-      <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
-      <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+      <td width="66%"><h2>Employer Account Registration</h2></td>
+      <td><button class="button search" onclick="location.href='./profile_search.php'" style="width:auto;">Search Students</button><td>
+      <td><button class="button dash" onclick="location.href='./dashboard.php'" style="width:auto;">Dashboard</button><td>
+      <td><button class="button log" onclick="location.href='index.php'" style="width:auto;">Logout</button><td>
+  </tr></table>
     </tr></table>
   </div>
 
@@ -69,7 +85,7 @@ a:visited {
     Company: <input type="text" name="company" value="<?php echo $company;?>">
     <span class="error">* <?php echo $companyErr;?></span>
     <br><br>
-    <input type="submit" name="submit" value="Submit">  
+    <td><button class="button button-block" name="submit" style="width:auto;">Submit</button></td>
   </form>
 
 </body>
