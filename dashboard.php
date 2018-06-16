@@ -53,6 +53,14 @@ button {
     cursor: pointer;
     width: 100%;
 }
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
 
 
@@ -63,7 +71,12 @@ button {
 </div>
 
 <div class = "navbar">
-  <button style="width:auto;">Something</button>
+  <table><tr style="color: green;">
+    <td width="68%"><h2>Dashboard</h2></td>
+    <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
+    <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
+    <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+  </tr></table>
 </div>
 
 <?php echo generateSchoolTable();?>

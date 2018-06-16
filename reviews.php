@@ -174,6 +174,14 @@ span.psw {
        width: 100%;
     }
 }
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
 </head>
 <body>
@@ -182,10 +190,12 @@ span.psw {
 </div>
 
 <div class = "navbar">
-<!--   <button onclick="document.getElementById('id01').style.display='block'"
-  style="width:auto;">Login</button> -->
-
-  <h2><?php echo getName(); ?></h2>
+	<table><tr style="color: green;">
+	  <td width="68%"><h2><?php echo getName(); ?></h2></td>
+	  <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
+	  <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
+	  <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+	</tr></table>
 </div>
 
 <div class = "body">

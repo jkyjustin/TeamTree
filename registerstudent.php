@@ -29,6 +29,14 @@ table {
     color: #228b22;
 }
 
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
 <body>
 
@@ -36,7 +44,12 @@ table {
   </div>
 
   <div class = "navbar">
-    <h2>Register a Student Account</h2>
+    <table><tr style="color: green;">
+      <td width="68%"><h2>Register an Employer Account</h2></td>
+      <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
+      <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
+      <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+    </tr></table>
   </div>
 
   <p><span class="error">* required field</span></p>
