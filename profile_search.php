@@ -5,20 +5,12 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {	
+body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  background:white url("image/backg3.png") no-repeat left top;
 }
 
-/* Full-width input fields */
-/*input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}*/
 table {
   border-spacing: 7px;
 }
@@ -38,37 +30,32 @@ table {
 .navbar {
     overflow: hidden;
     padding-top: 0px;
+    padding-bottom:0px;
     background-color: #333;
     color: #228b22;
 }
 
-.navbar button{
-  position: top;
-  border-radius: 30%;
-}
-.navbar img{
+
+.search {background-color: #abb868;} 
+.dash{background-color: #6c804b;} 
+.log {background-color: #940016;} 
+
+.navbar h2{
+    padding-top:0px;
+    padding-bottom:0px;
 }
 
-/* Style for navbar */
-.abc {
-  width: 100%;
-  padding: 300px;
-  background-image: url("image/backg3.png");
-  background-repeat: no-repeat;
-  background-position: left top;
-  background-blend-mode: lighten;
-}
-
-/* Set a style for all buttons */
 button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
-    border: none;
+    border-radius:30%;
     cursor: pointer;
     width: 100%;
+    font-size:16px;
 }
+
 
 button:hover {
     opacity: 0.8;
@@ -88,85 +75,14 @@ button:hover {
     position: relative;
 }
 
-img.avatar {
-    width: 15%;
-    border-radius: 50%;
+.navbar img{
+    padding-right:0px;
 }
 
 .container {
     padding: 16px;
 }
 
-span.psw {
-    float: right;
-    padding-top: 16px;
-}
-
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    padding-top: 60px;
-}
-
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-    border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button (x) */
-.close {
-    position: absolute;
-    right: 25px;
-    top: 0;
-    color: #000;
-    font-size: 35px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: red;
-    cursor: pointer;
-}
-
-/* Add Zoom Animation */
-.animate {
-    -webkit-animation: animatezoom 0.6s;
-    animation: animatezoom 0.6s
-}
-
-@-webkit-keyframes animatezoom {
-    from {-webkit-transform: scale(0)}
-    to {-webkit-transform: scale(1)}
-}
-
-@keyframes animatezoom {
-    from {transform: scale(0)}
-    to {transform: scale(1)}
-}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    span.psw {
-       display: block;
-       float: none;
-    }
-    .cancelbtn {
-       width: 100%;
-    }
-}
 a:link {
     color: green;
 }
@@ -184,11 +100,12 @@ a:visited {
 
 <div class = "navbar">
   <table><tr style="color: green;">
-    <td width="68%"><h2>Find a Classmate!</h2></td>
-    <td align="right"><h2><a href="./profile_search.php">Search Students</a></h2></td>
-    <td align="right"><h2><a href="./dashboard.php">Dashboard</a></h2></td>
-    <td><form action="logout.php" method="GET"><input type="submit" value="Logout"></form></td>
+    <td width="66%"><img src="image/find.gif" alt="find" style="width:300px;height:60px;border:0"></td>
+    <td><button class="button search" onclick="location.href='./profile_search.php'" style="width:auto;">Search Students</button><td>
+    <td><button class="button dash" onclick="location.href='./dashboard.php'" style="width:auto;">Dashboard</button><td>
+     <td><button class="button log" onclick="location.href='index.php'" style="width:auto;">Logout</button><td>
   </tr></table>
+
 </div>
 
 <div class = "body">
@@ -207,7 +124,8 @@ a:visited {
 				<td><input type="text" name="school"></td>
 			</tr>
 			<tr>
-				<td><input type ="submit" name="submit" value="Search!" ></td>
+
+				<td><button class="button button-block" name="submit" style="width:auto;">Search!</button></td>
 			</tr>
 		</table>
 	</form>
