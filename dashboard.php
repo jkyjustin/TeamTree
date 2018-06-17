@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -40,15 +39,15 @@ button {
 }
 
 .search {background-color: #abb868;} 
-.dash{background-color: #6c804b;} 
-.log {background-color: #940016;} 
 
+.dash{background-color: #6c804b;} 
+
+.log {background-color: #940016;} 
 
 .navbar button{
   position: top;
   border-radius: 30%;
 }
-
 
 a:link {
     color: green;
@@ -77,7 +76,7 @@ a:visited {
 </div>
 
 <form method="post">
-<t>This will query for all users who got a review from inputted id</t><br>
+<t>This will query for all users who ONLY got reviews from user with the inputted id:</t><br>
 Id: <input type="text" name="AccountId" value="<?php $account_id;?>">
 <input type="submit" name="query" value="Divide Query"/>
 </form>
@@ -120,11 +119,10 @@ function generateLowHighAvgTable($id) {
   $high = OCI_Fetch_Array($high_query, OCI_BOTH);
   $low = OCI_Fetch_Array($low_query, OCI_BOTH);
   $avg = OCI_Fetch_Array($avg_query, OCI_BOTH);
-  $roundedavg = round($avg[0], 2);
 
   $table = '<table border="1"><td><p>Low = '.$low[0];
   $table .= '</p></td><td><p>High = '.$high[0];
-  $table .= '</p></td><td><p>Avg = '.$roundedavg .'</p></td>';
+  $table .= '</p></td><td><p>Avg = '.$avg[0] .'</p></td>';
 
   return $table;
 }
@@ -153,6 +151,7 @@ function generateDivideQuery($id) {
 
 function executePlainSQL($cmdstr) {
   $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+  $userID = 1;
 	$statement = OCIParse($db_conn, $cmdstr);
 
 	if (!$statement) {
