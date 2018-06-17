@@ -82,6 +82,12 @@ a:visited {
 </form>
 
 <form method="post">
+<t><b>Find the lowest or highest average of reviews among Reviewees</b></t><br>
+<input type="submit" name="revieweeMin" value="min"/>
+<input type="submit" name="revieweeMax" value="max"/>
+</form>
+
+<form method="post">
 <t><b>This will query for all users who ONLY got reviews from user with the inputted id:</b></t><br>
 Id: <input type="text" name="AccountId" value="<?php $account_id;?>">
 <input type="submit" name="query" value="Divide Query"/>
