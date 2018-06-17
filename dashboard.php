@@ -110,15 +110,17 @@ if(isset($_POST['1'])) {
 }
 
 function generateSchoolsMax() {
-  $query = executePlainSQL("SELECT MAX(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)");
+  $query_string = "SELECT MAX(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)";
+  $query = executePlainSQL($query_string);
   $result = OCI_Fetch_Array($query);
-  return "<p>Highest school average for reviews = ".round($result[0],2)."</p>";
+  return "<p>Highest school average for reviews = ".round($result[0],2)."</p><br><p>Query = ".$query_string."</p>";
 }
 
 function generateSchoolsMin() {
-  $query = executePlainSQL("SELECT MIN(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)");
+  $query_string = "SELECT MIN(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)";
+  $query = executePlainSQL($query_string);
   $result = OCI_Fetch_Array($query);
-  return "<p>Lowest school average for reviews = ".round($result[0],2)."</p>";
+  return "<p>Lowest school average for reviews = ".round($result[0],2)."</p><br><p>Query = ".$query_string."</p>";
 }
 
 function generateSchoolsAvg() {
