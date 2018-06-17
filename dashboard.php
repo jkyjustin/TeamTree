@@ -131,19 +131,22 @@ function generateDivideQuery($id) {
   $max_query = "SELECT MAX(REVIEWERID) FROM REVIEWS";
   $max_query_result = executePlainSQL($max_query);
   $max_query_result_array = OCI_Fetch_Array($max_query_result);
+
   if ($id == null) {
     return "<p>REQUIRE USER ID</p>";
   } else if ($id > $max_query_result_array[0] || $id < 1) {
     return "<p>Invalid ID</p>";
-  }
-  $result = "<p>Relational Algebra: PROJECTION fname(Accounts JOIN [PROJECTION revieweeId(Reviews) DIVIDES PROJECTION revieweeId(SELECTION reviewerId= <b>".$id."</b> (Reviews))])</p>";
-  $result .= "<b>Names:</b>";
-  $query_res = executePlainSQL("SELECT FNAME FROM ACCOUNTS a WHERE NOT EXISTS ((SELECT r.REVIEWEEID FROM REVIEWS r WHERE r.REVIEWERID = {$id}) MINUS (SELECT r1.REVIEWEEID FROM REVIEWS r1 WHERE r1.REVIEWEEID = a.ACCTID))");
-  while($row = OCI_Fetch_Array($query_res, OCI_BOTH)) {
-    $result .= "<p>".$row[0]."</p>";
-  }
+  } else {
+    $result = "<p>Relational Algebra: PROJECTION fname(Accounts JOIN [PROJECTION revieweeId(Reviews) DIVIDES PROJECTION revieweeId(SELECTION reviewerId= <b>".$id."</b> (Reviews))])</p>";
+    $result .= "<b>Names:</b>";
+    $query_res = executePlainSQL("SELECT FNAME FROM ACCOUNTS a WHERE NOT EXISTS ((SELECT r.REVIEWEEID FROM REVIEWS r WHERE r.REVIEWERID = {$id}) MINUS (SELECT r1.REVIEWEEID FROM REVIEWS r1 WHERE r1.REVIEWEEID = a.ACCTID))");
+  
+    while($row = OCI_Fetch_Array($query_res, OCI_BOTH)) {
+      $result .= "<p>".$row[0]."</p>";
+    }
 
-  return $result;
+    return $result;
+  }
 }
 
 function executePlainSQL($cmdstr) {
