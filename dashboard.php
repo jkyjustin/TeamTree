@@ -119,10 +119,11 @@ function generateLowHighAvgTable($id) {
   $high = OCI_Fetch_Array($high_query, OCI_BOTH);
   $low = OCI_Fetch_Array($low_query, OCI_BOTH);
   $avg = OCI_Fetch_Array($avg_query, OCI_BOTH);
+  $roundedavg = round($avg[0], 2);
 
   $table = '<table border="1"><td><p>Low = '.$low[0];
   $table .= '</p></td><td><p>High = '.$high[0];
-  $table .= '</p></td><td><p>Avg = '.$avg[0] .'</p></td>';
+  $table .= '</p></td><td><p>Avg = '.$roundedavg .'</p></td>';
 
   return $table;
 }
@@ -151,7 +152,6 @@ function generateDivideQuery($id) {
 
 function executePlainSQL($cmdstr) {
   $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-  $userID = 1;
 	$statement = OCIParse($db_conn, $cmdstr);
 
 	if (!$statement) {

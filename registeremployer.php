@@ -175,7 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       echo "This combination of first name, last name and email are taken";
     } else {
       $account_id = generateAcctId();
-      executePlainSQL("INSERT INTO Accounts VALUES({$account_id}, '{$firstname}', '{$lastname}', '{$email}', '{$password}', 0)");
+      executePlainSQL("INSERT INTO Accounts VALUES({$account_id}, '{$firstname}', '{$lastname}', '{$email}', '{$password}', 1)");
       executePLainSQL("INSERT INTO Employers VALUES ({$account_id}, {$companyId})");
       OCI_commit($db_conn);
       header('Location: ./index.php');

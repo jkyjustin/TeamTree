@@ -1,7 +1,7 @@
 <?php
-
+		session_start();
    $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-   session_start();
+   
 
    function executePlainSQL($cmdstr) 
 	{

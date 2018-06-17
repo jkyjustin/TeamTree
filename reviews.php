@@ -304,8 +304,12 @@ a:visited {
 	}
 
 	function getName() {
-		global $profileID;
-		$query = "SELECT fname, lname FROM Accounts WHERE acctID={$_GET['revieweeID']}";
+		if (!empty($_GET['revieweeID'])) {
+			$revieweeID = $_GET['revieweeID'];
+		} else {
+			$revieweeID = $_POST['revieweeToken'];
+		}
+		$query = "SELECT fname, lname FROM Accounts WHERE acctID={$revieweeID}";
 		$result = executePlainSQL($query);
 		$row = OCI_Fetch_Array($result, OCI_BOTH);
 		$fname = $row['FNAME'];

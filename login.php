@@ -163,11 +163,13 @@ img.avatar {
           $_SESSION['login_id'] = $userid;
           $_SESSION['password'] = $password;
 
+          setcookie("userID", $userid, time() + 3600, "/");
+
           //$profileLink = "profile.php?acctID=" . $userRow["ACCTID"] . "&userID=" . $userid";
           //echo $profileLink;
           //$profileLink = "<a href=profile.php?acctID=" . $row["ACCTID"] . "&userID=" . $userID . "> View Profile </a>";
            
-           header("location: profile.php");
+           header("location: dashboard.php");
 
         
       }else 
