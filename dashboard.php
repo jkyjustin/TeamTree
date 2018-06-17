@@ -76,7 +76,13 @@ a:visited {
 </div>
 
 <form method="post">
-<t>This will query for all users who ONLY got reviews from user with the inputted id:</t><br>
+<t><b>Find the lowest or highest average of reviews among Schools</b></t><br>
+<input type="submit" name="groupMin" value="min"/>
+<input type="submit" name="groupMax" value="max"/>
+</form>
+
+<form method="post">
+<t><b>This will query for all users who ONLY got reviews from user with the inputted id:</b></t><br>
 Id: <input type="text" name="AccountId" value="<?php $account_id;?>">
 <input type="submit" name="query" value="Divide Query"/>
 </form>
@@ -97,6 +103,26 @@ if(isset($_POST['1'])) {
   echo generateLowHighAvgTable(2);
 } else if(isset($_POST['query'])) {
   echo generateDivideQuery($_POST['AccountId']);
+} else if(isset($_POST['groupMin'])) {
+  echo generateSchoolsMin();
+} else if(isset($_POST['groupMax'])) {
+  echo generateSchoolsMax();
+}
+
+function generateSchoolsMax() {
+  $query = executePlainSQL("SELECT MAX(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)");
+  $result = OCI_Fetch_Array($query);
+  return "<p>Highest school average for reviews = ".round($result[0],2)."</p>";
+}
+
+function generateSchoolsMin() {
+  $query = executePlainSQL("SELECT MIN(AVERAGE) FROM (SELECT SCHOOLID, AVG(SCORE) AS AVERAGE FROM REVIEWS GROUP BY SCHOOLID)");
+  $result = OCI_Fetch_Array($query);
+  return "<p>Lowest school average for reviews = ".round($result[0],2)."</p>";
+}
+
+function generateSchoolsAvg() {
+  return "SELECT SCHOOLID, AVG(SCORE) FROM REVIEWS GROUP BY SCHOOLID";
 }
 
 function generateSchoolTable() {
@@ -151,7 +177,6 @@ function generateDivideQuery($id) {
 
 function executePlainSQL($cmdstr) {
   $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
-  $userID = 1;
 	$statement = OCIParse($db_conn, $cmdstr);
 
 	if (!$statement) {
