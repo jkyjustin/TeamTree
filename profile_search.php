@@ -161,7 +161,7 @@ function printResult($result) { //prints results from a select statement
 }
 
 function generateResults() {
-	$select_query = "SELECT ";
+	$select_query = "SELECT ACCTID, ";
 	$school_only = false;
 	foreach($_GET['checkboxes'] as $values){
 		switch ($values) {
@@ -192,10 +192,8 @@ function generateResults() {
 	$result = NULL;
 	$queryStr = NULL;
 
-	// Query on fname, lname, school -- very simplistic
-	if ($school_only) {
-		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
-	} else if (empty($lname) && empty($fname) && empty($sname)) {
+	// Query on fname, lname, school
+	if (empty($lname) && empty($fname) && empty($sname)) {
 		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
 	} else if (empty($lname) && empty($fname)) {
 		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
