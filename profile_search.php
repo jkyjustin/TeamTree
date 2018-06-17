@@ -103,9 +103,15 @@ a:visited {
 				<td><input type="text" name="school"></td>
 			</tr>
 			<tr>
-
 				<td><button class="button button-block" name="submit" style="width:auto;">Search!</button></td>
 			</tr>
+			<input type="checkbox" name="checkboxes[]" value="fname"/>
+			<label for="fname">first name</label>
+			<input type="checkbox" name="checkboxes[]" value="lname"/>
+			<label for="lname">last name</label>
+			<input type="checkbox" name="checkboxes[]" value="school"/>
+			<label for="school">school</label>
+			<p>If no checkboxes are selected all attributes will be returned</p>
 		</table>
 	</form>
 </div>
@@ -154,8 +160,31 @@ function printResult($result) { //prints results from a select statement
 	echo "</table></div>";
 }
 
-// Check form submitted
-if (isset($_GET['submit'])) {
+function generateResults() {
+	$select_query = "SELECT ";
+	$school_only = false;
+	foreach($_GET['checkboxes'] as $values){
+		switch ($values) {
+			case "fname":
+				$select_query .= " FNAME,";
+				break;
+			case "lname":
+				$select_query .= " LNAME,";
+				break;
+			case "school":
+				$select_query .= " SNAME";
+				break;
+		}
+	}
+
+	if(empty($_GET['checkboxes'])){
+		$select_query = "SELECT *";
+	}else if(sizeof($_GET['checkboxes']) == 1 && $_GET['checkboxes'][0] == "school")
+		$school_only = true;
+	else{
+		$select_query = trim($select_query, ",");
+	}
+
 	$fname = $_GET['fname'];
 	$lname = $_GET['lname'];
 	$sname = $_GET['school'];
@@ -164,27 +193,34 @@ if (isset($_GET['submit'])) {
 	$queryStr = NULL;
 
 	// Query on fname, lname, school -- very simplistic
-	if (empty($lname) && empty($fname) && empty($sname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
+	if ($school_only) {
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0 GROUP BY SNAME";
+	} else if (empty($lname) && empty($fname) && empty($sname)) {
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
 	} else if (empty($lname) && empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else if (empty($lname) && empty($sname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND isEmployer=0";
 	} else if (empty($sname) && empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
 	} else if (empty($fname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else if (empty($sname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND isEmployer=0";
 	} else if (empty($lname)) {
-		$queryStr = "SELECT * FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	} else {	// Query on just fname
-		$queryStr = "SELECT * FROM Students natural join Accounts natural join Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
+		$queryStr = $select_query." FROM Students natural join Accounts natural join Schools WHERE UPPER(fname)=UPPER('{$fname}') AND UPPER(lname)=UPPER('{$lname}') AND UPPER(sname)=UPPER('{$sname}') AND isEmployer=0";
 	}
 
 	$result = executePlainSQL($queryStr);
 	printResult($result);
 	OCILogoff($db_conn);
+}
+
+// Check form submitted
+if (isset($_GET['submit'])) {
+	generateResults();
 }
 
 ?>
