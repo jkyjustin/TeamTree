@@ -1,5 +1,8 @@
 <?php
-	setcookie("userID", 1, time() + 1800, "/");
+	session_start();
+	// include 'session.php';
+	// $userID = $_SESSION['login_id'];
+	// setcookie("userID", 1, time() + 1800, "/");
 ?>
 <html>
 <head>

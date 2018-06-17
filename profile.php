@@ -1,5 +1,7 @@
 <?php
 	session_start();
+	// $userID = $_SESSION['login_id'];
+	// echo $userID;
 	$db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
 ?>
 
@@ -12,15 +14,6 @@ body {
   margin: 0;
 }
 
-/* Full-width input fields */
-/*input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}*/
 table {
   border-spacing: 7px;
 }
@@ -48,6 +41,28 @@ table {
   position: top;
   border-radius: 30%;
 }
+
+.search {background-color: #abb868;} 
+.dash{background-color: #6c804b;} 
+.log {background-color: #940016;} 
+
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius:30%;
+    cursor: pointer;
+    width: 100%;
+    font-size:16px;
+}
+
+
+button:hover {
+    opacity: 0.8;
+}
+
 .navbar img{
 }
 
@@ -169,6 +184,15 @@ span.psw {
        width: 100%;
     }
 }
+
+a:link {
+    color: green;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
 </style>
 </head>
 <body>
@@ -177,15 +201,15 @@ span.psw {
 </div>
 
 <div class = "navbar">
-<!--   <button onclick="document.getElementById('id01').style.display='block'"
-  style="width:auto;">Login</button> -->
-
-  <h2><?php echo getName(); ?></h2>
+  
+  <table><tr style="color: green;">
+    <td width="66%"><h2><?php echo getName(); ?></h2></td>
+    <td><button class="button search" onclick="location.href='./profile_search.php'" style="width:auto;">Search Students</button><td>
+    <td><button class="button dash" onclick="location.href='./dashboard.php'" style="width:auto;">Dashboard</button><td>
+     <td><button class="button log" onclick="location.href='index.php'" style="width:auto;">Logout</button><td>
+  </tr></table>
 </div>
 
-<!-- <div class = "body">
-	can put some stuff in here
-</div> -->
 </body>
 </html>
 
@@ -234,10 +258,11 @@ function getName() {
 $result = NULL;
 $success = True;
 $db_conn = OCILogon("ora_q7b7", "a68143064", "dbhost.ugrad.cs.ubc.ca:1522/ug");
+$userID = $_COOKIE['userID'];
 
 if (isset($_GET['unendorse'])) {
 	$profileID = $_GET['acctID'];
-	$userID = $_GET['userID'];
+	// $userID = $_GET['userID'];
 	$query = "DELETE FROM Endorsements WHERE employerID={$userID} AND studentID={$profileID}";
 	$result = executePlainSQL($query);
 	OCICommit($db_conn);
@@ -245,7 +270,7 @@ if (isset($_GET['unendorse'])) {
 
 if (isset($_GET['endorse'])) {
 	$profileID = $_GET['acctID'];
-	$userID = $_GET['userID'];
+	// $userID = $_GET['userID'];
 	$query = "INSERT INTO Endorsements VALUES({$userID}, {$profileID})";
 	$result = executePlainSQL($query);
 	OCICommit($db_conn);
@@ -253,7 +278,7 @@ if (isset($_GET['endorse'])) {
 
 if (isset($_GET['updateSchool'])) {
 	$profileID = $_GET['acctID'];
-	$userID = $_GET['userID'];
+	// $userID = $_GET['userID'];
 	$newSchoolName = $_GET['newSchoolName'];
 	$newSchoolID = getSchoolId($newSchoolName);
 	if ($newSchoolID <= 0) {
@@ -266,8 +291,7 @@ if (isset($_GET['updateSchool'])) {
 }
 
 $profileID = $_GET['acctID'];
-$userID = $_GET['userID'];
-// $userID = 4;
+// $userID = $_COOKIE['userID'];
 
 $query = "SELECT AVG(SCORE) FROM REVIEWS WHERE REVIEWEEID={$profileID}";
 $result = executePlainSQL($query);
