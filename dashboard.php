@@ -122,7 +122,7 @@ function generateLowHighAvgTable($id) {
 
   $table = '<table border="1"><td><p>Low = '.$low[0];
   $table .= '</p></td><td><p>High = '.$high[0];
-  $table .= '</p></td><td><p>Avg = '.$avg[0] .'</p></td>';
+  $table .= '</p></td><td><p>Avg = '.round($avg[0], 2).'</p></td>';
 
   return $table;
 }
