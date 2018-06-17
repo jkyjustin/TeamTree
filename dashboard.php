@@ -76,18 +76,27 @@ a:visited {
   </tr></table>
 </div>
 
-<?php echo generateSchoolTable();?>
+<form method="post">
+Id: <input type="text" name="AccountId" value="<?php $account_id;?>">
+<input type="submit" name="query" value="Divide Query"/>
+</form>
 
+<?php echo generateSchoolTable();?>
 </body>
 </html>
 
 
 <?php
+//Global Variables
+$account_id = "";
+
 //Listener on post requests
 if(isset($_POST['1'])) {
   echo generateLowHighAvgTable(1);
 } else if(isset($_POST['2'])) {
   echo generateLowHighAvgTable(2);
+} else if(isset($_POST['query'])) {
+  echo generateDivideQuery($_POST['AccountId']);
 }
 
 function generateSchoolTable() {
@@ -116,6 +125,20 @@ function generateLowHighAvgTable($id) {
   $table .= '</p></td><td><p>Avg = '.$avg[0] .'</p></td>';
 
   return $table;
+}
+
+function generateDivideQuery($id) {
+  if ($id == null) {
+    return "<p>REQUIRE USER ID</p>";
+  }
+  $result = "<p>Relational Algebra: PROJECTION fname(Accounts JOIN [PROJECTION revieweeId(Reviews) DIVIDES PROJECTION revieweeId(SELECTION reviewerId= <b>".$id."</b> (Reviews))])</p>";
+  $result .= "<b>Names:</b>";
+  $query_res = executePlainSQL("SELECT FNAME FROM ACCOUNTS a WHERE NOT EXISTS ((SELECT r.REVIEWEEID FROM REVIEWS r WHERE r.REVIEWERID = {$id}) MINUS (SELECT r1.REVIEWEEID FROM REVIEWS r1 WHERE r1.REVIEWEEID = a.ACCTID))");
+  while($row = OCI_Fetch_Array($query_res, OCI_BOTH)) {
+    $result .= "<p>".$row[0]."</p>";
+  }
+
+  return $result;
 }
 
 function executePlainSQL($cmdstr) {
