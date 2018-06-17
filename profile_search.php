@@ -194,7 +194,7 @@ function generateResults() {
 
 	// Query on fname, lname, school -- very simplistic
 	if ($school_only) {
-		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0 GROUP BY SNAME";
+		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
 	} else if (empty($lname) && empty($fname) && empty($sname)) {
 		$queryStr = $select_query." FROM Students NATURAL JOIN Accounts NATURAL JOIN Schools WHERE isEmployer=0";
 	} else if (empty($lname) && empty($fname)) {
