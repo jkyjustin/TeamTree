@@ -69,7 +69,7 @@ a:visited {
 
 <div class = "navbar">
   <table><tr style="color: green;">
-    <td width="67%"><img src="image/dashh.gif" alt="dash" style="width:300px;height:60px;border:0"></td>
+    <td width="67%"><img src="image/dash.gif" alt="dash" style="width:300px;height:60px;border:0"></td>
     <td><button class="button search" onclick="location.href='./profile_search.php'" style="width:auto;">Search Students</button><td>
     <td><button class="button dash" onclick="location.href='./dashboard.php'" style="width:auto;">Dashboard</button><td>
     <td><button class="button log" onclick="location.href='index.php'" style="width:auto;">Logout</button><td>
@@ -128,8 +128,13 @@ function generateLowHighAvgTable($id) {
 }
 
 function generateDivideQuery($id) {
+  $max_query = "SELECT MAX(REVIEWERID) FROM REVIEWS";
+  $max_query_result = executePlainSQL($max_query);
+  $max_query_result_array = OCI_Fetch_Array($max_query_result);
   if ($id == null) {
     return "<p>REQUIRE USER ID</p>";
+  } else if ($id > $max_query_result_array[0] || $id < 1) {
+    return "<p>Invalid ID</p>";
   }
   $result = "<p>Relational Algebra: PROJECTION fname(Accounts JOIN [PROJECTION revieweeId(Reviews) DIVIDES PROJECTION revieweeId(SELECTION reviewerId= <b>".$id."</b> (Reviews))])</p>";
   $result .= "<b>Names:</b>";
