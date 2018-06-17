@@ -77,6 +77,7 @@ a:visited {
 </div>
 
 <form method="post">
+<t>This will query for all users who got a review from inputted id</t><br>
 Id: <input type="text" name="AccountId" value="<?php $account_id;?>">
 <input type="submit" name="query" value="Divide Query"/>
 </form>
