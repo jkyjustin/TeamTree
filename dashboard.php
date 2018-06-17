@@ -81,11 +81,11 @@ a:visited {
 <input type="submit" name="groupMax" value="max"/>
 </form>
 
-<form method="post">
+<!-- <form method="post">
 <t><b>Find the lowest or highest average of reviews among Reviewees</b></t><br>
 <input type="submit" name="revieweeMin" value="min"/>
 <input type="submit" name="revieweeMax" value="max"/>
-</form>
+</form> -->
 
 <form method="post">
 <t><b>This will query for all users who ONLY got reviews from user with the inputted id:</b></t><br>
