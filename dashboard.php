@@ -123,10 +123,6 @@ function generateSchoolsMin() {
   return "<p>Lowest school average for reviews = ".round($result[0],2)."</p><br><p>Query = ".$query_string."</p>";
 }
 
-function generateSchoolsAvg() {
-  return "SELECT SCHOOLID, AVG(SCORE) FROM REVIEWS GROUP BY SCHOOLID";
-}
-
 function generateSchoolTable() {
   $res = executePlainSQL("SELECT DISTINCT(SNAME), SCHOOLID FROM SCHOOLS");
   $html = '<table border="1">';
